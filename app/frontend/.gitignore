@@ -1,0 +1,303 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+frontend.log
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Build files
+/build
+/dist
+/.vite
+
+# Testing
+/coverage
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# VSCode
+.vscode/
+
+# Package managers
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# ============================================================================
+# VUE.JS & VITE SPECIFIC (Enhanced for better coverage)
+# ============================================================================
+
+# Vite specific files
+.vite/
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
+*.local
+
+# Vite build output
+dist/
+dist-ssr/
+
+# Vue.js specific
+*.vue.cache
+*.vue.js.map
+*.vue.ts.map
+
+# TypeScript
+*.tsbuildinfo
+*.ts.map
+
+# ============================================================================
+# FRONTEND TESTING & DEVELOPMENT
+# ============================================================================
+
+# Testing frameworks
+cypress/videos/
+cypress/screenshots/
+cypress/downloads/
+__tests__/__snapshots__/
+jest.config.js.bak
+
+# Test reports and coverage
+coverage/
+.nyc_output/
+playwright-report/
+test-results/
+*.lcov
+
+# Browser testing
+browser-cookies/
+selenium-debug.log
+webdriver.log
+
+# Parcel cache
+.parcel-cache/
+
+# Webpack
+.webpack/
+
+# Rollup
+.rollup.cache/
+
+# Browser cache and dev tools
+.cache/
+.eslintcache
+.stylelintcache
+
+# Build artifacts
+build/
+.next/
+.nuxt/
+.ssr/
+
+# Storybook
+.storybook-out/
+storybook-static/
+
+# PWA files
+sw.js
+sw.js.map
+workbox-*.js
+workbox-*.js.map
+
+# Temporary files
+.tmp/
+.temp/
+*.tmp
+*.temp
+
+# ============================================================================
+# FRONTEND DEVELOPMENT FILES
+# ============================================================================
+
+# Mock data and fixtures
+mock-data/
+fixtures/
+__mocks__/
+
+# Development utilities
+dev-utils/
+build-tools/
+scripts/dev-*
+
+# Performance monitoring
+lighthouse/
+pagespeed/
+
+# Component documentation
+component-docs/
+storybook-static/
+
+# ============================================================================
+# BROWSER & DEVICE TESTING
+# ============================================================================
+
+# Browser automation
+chromedriver.log
+geckodriver.log
+iedriverserver.log
+
+# Device testing
+device-logs/
+appium-logs/
+
+# Screenshot directories
+screenshots/
+diff-screenshots/
+
+# ============================================================================
+# FRONTEND BUILD TOOLS
+# ============================================================================
+
+# Webpack bundle analyzer
+webpack-bundle-analyzer/
+
+# PostCSS
+.postcss/
+
+# Autoprefixer
+.autoprefixer/
+
+# Sass/Scss
+*.css.map
+*.scss.map
+
+# Less
+*.less.map
+
+# Stylus
+*.styl.map
+
+# ============================================================================
+# DEVELOPMENT ASSETS
+# ============================================================================
+
+# Assets and media
+assets/cache/
+media/cache/
+images/cache/
+
+# Fonts
+fonts/cache/
+*.woff.cache
+*.ttf.cache
+
+# Icons
+icons/cache/
+*.ico.cache
+
+# ============================================================================
+# LOCAL DEVELOPMENT
+# ============================================================================
+
+# Local development overrides
+.env.local
+.env.*.local
+*.local.js
+*.local.ts
+*.local.json
+
+# Development servers
+dev-server.log
+vite-dev.log
+webpack-dev.log
+
+# Hot module replacement
+.hot-update.*
+
+# Module federation
+remoteEntry.js
+remoteEntry.js.map
+
+# ============================================================================
+# CACHE DIRECTORIES
+# ============================================================================
+
+# Package manager caches
+.npm/
+.yarn/cache/
+.yarn/unplugged/
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnpm-store/
+
+# Build caches
+.cache/
+.tmp/cache/
+.turbo/
+
+# IDE and editor caches
+.idea/cache/
+.vscode/extensions/
+
+# ============================================================================
+# FRONTEND SPECIFIC DEVELOPMENT FILES
+# ============================================================================
+
+# Integration test files (from our work)
+IntegrationTest.vue
+*_integration_*.vue
+*_test_*.vue
+
+# Component stories
+*.stories.js
+*.stories.ts
+*.stories.jsx
+*.stories.tsx
+
+# Playwright
+playwright.config.js
+playwright.config.ts
+
+# Cypress
+cypress.config.js
+cypress.config.ts
+
+# Jest
+jest.config.js
+jest.config.ts
+
+# Vitest
+vitest.config.js
+vitest.config.ts
+
+# ESLint
+.eslintcache
+
+# Prettier
+.prettiercache
+
+# Stylelint
+.stylelintcache

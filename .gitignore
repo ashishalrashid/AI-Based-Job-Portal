@@ -1,0 +1,285 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Pytest cache
+.pytest_cache/
+**/.pytest_cache/
+
+# Python
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+**/__pycache__/
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+**/db_dir/*.db
+**/db_dir/*.db-*
+
+# Log files
+*.log
+*.log.*
+backend.log
+frontend.log
+nohup.out
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# Frontend build output
+dist/
+build/
+*.tgz
+*.tar.gz
+
+# Development and debug files
+create_*.py
+debug_*.py
+recreate_*.py
+migrate_*.py
+setup_*.py
+
+# Uploads
+uploads/
+**/uploads/*
+
+# Instance specific files
+instance/
+**/instance/*
+
+# Flask specific
+instance/
+webassets.cache
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# Test files
+.pytest_cache/
+.tox/
+.nox/
+.coverage
+htmlcov/
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# ============================================================================
+# TASK DOCUMENTATION & TESTING FILES (Added by integration work)
+# ============================================================================
+
+# Task progress and documentation files
+task_progress*.txt
+task_*.txt
+progress*.txt
+
+# Testing documentation and guides
+*_test_*.js
+*_test_*.md
+FRONTEND_BACKEND_INTEGRATION_*.md
+integration_test_*.md
+FRONTEND_TESTING_*.md
+
+# Development scripts and test suites
+*_test_suite.js
+*_suite.js
+start_*.sh
+launch.sh
+
+# Browser automation and testing
+browser_*.txt
+*_cookies.txt
+admin_cookies.txt
+hr_cookies.txt
+cookies.txt
+
+# Project snapshots and structure files
+project_snapshot.py
+*_snapshot.py
+structure_and_contents.txt
+contents.txt
+
+# ============================================================================
+# ENVIRONMENT AND CONFIGURATION
+# ============================================================================
+
+# Local environment overrides
+.env.local
+.env.development
+.env.production
+*.local
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# dotenv environment variables file
+.env.test
+
+# Parcel-bundler cache
+.cache
+.parcel-cache
+
+# Next.js build output
+.next
+
+# Nuxt.js build / generate output
+.nuxt
+dist
+
+# Gatsby files
+.cache/
+public
+
+# Storybook build outputs
+.out
+.storybook-out
+
+# Generated documentation
+docs/build/
+.docs-venv/
+
+# Temporary folders
+tmp/
+temp/
+
+# Editor directories and files
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Ignore recordings
+app/recordings/*
+!app/recordings/.gitkeep
+app/backend/recordings/
+app/recordings/
+structure_and_contents.txt
+project_snapshot.py

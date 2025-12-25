@@ -1,0 +1,396 @@
+# ============================================================================
+# BASIC DIRECTORIES
+# ============================================================================
+
+# Environment and uploads
+/env
+/uploads
+<<<<<<< HEAD
+
+# ============================================================================
+# PYTHON DEVELOPMENT (Comprehensive)
+# ============================================================================
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Python
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+**/__pycache__/
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Database files (enhanced coverage)
+*.db
+*.sqlite
+*.sqlite3
+db_dir/*.db
+db_dir/*.db-*
+database.db
+recruitement.db
+test.db
+dev.db
+
+# Instance specific files
+instance/
+**/instance/*
+
+# ============================================================================
+# FLASK SPECIFIC
+# ============================================================================
+
+# Flask instance
+instance/
+webassets.cache
+
+# Flask logs
+flask.log
+flask.*.log
+
+# ============================================================================
+# TESTING & COVERAGE
+# ============================================================================
+
+# Pytest
+.pytest_cache/
+.tox/
+.nox/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
+.hypothesis/
+
+# Coverage reports
+htmlcov/
+coverage.xml
+*.cover
+
+# Test files
+tests/test_*.py
+test_*.py
+*_test.py
+conftest.py
+
+# Test databases
+test_*.db
+test_*.sqlite
+test_*.sqlite3
+
+# ============================================================================
+# LOGGING & DEBUGGING
+# ============================================================================
+
+# Log files
+*.log
+*.log.*
+backend.log
+flask.log
+app.log
+error.log
+debug.log
+
+# Debug files
+debug_*.py
+create_*.py
+recreate_*.py
+migrate_*.py
+setup_*.py
+
+# Backup files
+*.bak
+*.backup
+*.old
+*~
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# ============================================================================
+# ENVIRONMENT VARIABLES
+# ============================================================================
+
+# Environment files
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+.env.*.local
+
+# Configuration files
+config.py.bak
+settings.py.bak
+
+# ============================================================================
+# IDE & EDITOR FILES
+# ============================================================================
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# PyCharm
+.idea/
+*.iml
+*.iws
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+*~
+\#*\#
+.\#*
+
+# ============================================================================
+# OPERATING SYSTEM FILES
+# ============================================================================
+
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+
+# ============================================================================
+# DEVELOPMENT DATA & CACHES
+# ============================================================================
+
+# Cache directories
+.cache/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+virtualenv/
+.env/
+
+# ============================================================================
+# BACKEND DEVELOPMENT SPECIFIC
+# ============================================================================
+
+# API documentation
+swagger.json
+openapi.json
+api-docs/
+
+# Database migrations
+migrations/
+alembic/
+versions/
+
+# API testing
+postman/
+api-tests/
+rest-client/
+
+# Performance profiling
+profile_results/
+profiling/
+*.prof
+
+# ============================================================================
+# BACKEND TASK FILES (From our integration work)
+# ============================================================================
+
+# Database initialization scripts
+initialize_*.py
+init_*.py
+setup_db.py
+
+# Development utilities
+dev_*.py
+test_*.py
+debug_*.py
+
+# Documentation files
+README_dev.md
+DEV_*.md
+API_*.md
+
+# ============================================================================
+# BROWSER & CLIENT DATA
+# ============================================================================
+
+# Browser automation data
+browser_data/
+selenium/
+webdriver/
+
+# Client files
+client_*.json
+client_*.txt
+cookies_*.txt
+
+# ============================================================================
+# BACKEND SPECIFIC BUILD & DEPLOYMENT
+# ============================================================================
+
+# Build artifacts
+build/
+dist/
+*.build/
+
+# Deployment files
+deploy_*.py
+deploy_*.sh
+docker-compose.override.yml
+
+# ============================================================================
+# MONITORING & ANALYTICS
+# ============================================================================
+
+# Monitoring data
+monitoring/
+metrics/
+*.metrics
+
+# Analytics
+analytics/
+tracking/
+
+# ============================================================================
+# BACKEND DEVELOPMENT UTILITIES
+# ============================================================================
+
+# Development scripts
+dev_scripts/
+#utils/
+helpers/
+scripts/dev_*
+
+# Data files
+data/
+fixtures/
+seed_data/
+
+# ============================================================================
+# BACKEND TESTING ARTIFACTS
+# ============================================================================
+
+# Test reports
+test_reports/
+junit.xml
+test-results.xml
+
+# Load testing
+load_test_*.py
+ab_test_*.py
+locust_*.py
+
+# ============================================================================
+# SECURITY & SENSITIVE DATA
+# ============================================================================
+
+# Secrets
+secrets.json
+secrets.yml
+secrets.yaml
+private_key.pem
+*.key
+*.pem
+
+# SSL certificates
+*.crt
+*.cer
+*.der
+
+# Password files
+passwords.txt
+secrets.txt
+
+# ============================================================================
+# BACKEND CACHE & PERFORMANCE
+# ============================================================================
+
+# Cache files
+cache/
+*.cache
+redis_dump.rdb
+
+# Session files
+sessions/
+*.session
+
+# ============================================================================
+# BACKEND SPECIFIC TEMPORARY FILES
+# ============================================================================
+
+# File uploads (temporary)
+uploads/temp/
+uploads/tmp/
+
+# Processing files
+processing/
+*.processing
+
+# Export files
+exports/
+*.export
+
+# ============================================================================
+# BACKEND DEVELOPMENT NOTES
+# ============================================================================
+
+# Development notes
+dev_notes/
+development_notes.md
+TODO_*.md
+FIXME_*.md
+=======
+/.env
+/offer_letters
+>>>>>>> origin/jyoti_back_front

@@ -1,0 +1,30 @@
+{
+  "info": {
+    "name": "Resume Parser - Health Check",
+    "_postman_id": "d85ee097-6adc-4d88-9a52-a89d466bcef2",
+    "description": "Health check endpoint for resume parser API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8086/api/resume_parser/health",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8086",
+          "path": [
+            "api",
+            "resume_parser",
+            "health"
+          ]
+        }
+      }
+    }
+  ]
+}

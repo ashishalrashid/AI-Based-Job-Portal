@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="HR Recruitment System Documentation - Complete API and frontend documentation" />
+    <title>HR Recruitment System - Documentation</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+        --accent: #2563eb;
+        --accent-hover: #1d4ed8;
+        --bg-primary: #0f172a;
+        --bg-secondary: #1e293b;
+        --bg-card: rgba(15, 23, 42, 0.9);
+        --text-primary: #e2e8f0;
+        --text-secondary: #cbd5e1;
+        --border: rgba(148, 163, 184, 0.3);
+        --border-hover: rgba(37, 99, 235, 0.5);
+      }
+      
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      
+      body {
+        margin: 0;
+        background: linear-gradient(135deg, var(--bg-primary) 0%, #1a1f3a 100%);
+        color: var(--text-primary);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+        position: relative;
+        overflow-x: hidden;
+      }
+      
+      /* Animated background */
+      body::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: 
+          radial-gradient(circle at 20% 50%, rgba(37, 99, 235, 0.1) 0%, transparent 50%),
+          radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+        animation: pulse 8s ease-in-out infinite;
+        pointer-events: none;
+      }
+      
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.8; }
+      }
+      
+      main {
+        position: relative;
+        z-index: 1;
+        padding: 3rem 4rem;
+        border-radius: 1.5rem;
+        background: var(--bg-card);
+        backdrop-filter: blur(10px);
+        box-shadow: 
+          0 20px 60px rgba(0, 0, 0, 0.5),
+          0 0 0 1px var(--border);
+        text-align: center;
+        max-width: 700px;
+        width: 100%;
+        animation: fadeIn 0.6s ease-out;
+      }
+      
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      
+      .logo {
+        font-size: 3rem;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(135deg, var(--accent), #8b5cf6);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-weight: 700;
+      }
+      
+      h1 {
+        margin-bottom: 0.5rem;
+        font-size: 2.5rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+      }
+      
+      .subtitle {
+        margin-bottom: 2.5rem;
+        color: var(--text-secondary);
+        font-size: 1.1rem;
+        line-height: 1.6;
+      }
+      
+      .links {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin-bottom: 2rem;
+      }
+      
+      a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        padding: 1.25rem 2rem;
+        border-radius: 0.75rem;
+        color: var(--text-primary);
+        border: 2px solid var(--border);
+        text-decoration: none;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        font-size: 1.05rem;
+        background: rgba(30, 41, 59, 0.5);
+        position: relative;
+        overflow: hidden;
+      }
+      
+      a::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(37, 99, 235, 0.2), transparent);
+        transition: left 0.5s ease;
+      }
+      
+      a:hover {
+        border-color: var(--accent);
+        color: white;
+        background: rgba(37, 99, 235, 0.15);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+      }
+      
+      a:hover::before {
+        left: 100%;
+      }
+      
+      .icon {
+        font-size: 1.5rem;
+      }
+      
+      .info {
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid var(--border);
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        line-height: 1.6;
+      }
+      
+      .info strong {
+        color: var(--text-primary);
+      }
+      
+      @media (max-width: 640px) {
+        main {
+          padding: 2rem 1.5rem;
+        }
+        
+        h1 {
+          font-size: 2rem;
+        }
+        
+        .logo {
+          font-size: 2.5rem;
+        }
+        
+        a {
+          padding: 1rem 1.5rem;
+          font-size: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="logo">📚</div>
+      <h1>HR Recruitment System</h1>
+      <p class="subtitle">
+        Complete documentation for the HR Recruitment System, including backend API references 
+        and frontend component guides.
+      </p>
+      
+      <div class="links">
+        <a href="backend/index.html">
+          <span class="icon">⚙️</span>
+          <span>Backend Documentation</span>
+        </a>
+        <a href="frontend/index.html">
+          <span class="icon">🎨</span>
+          <span>Frontend Documentation</span>
+        </a>
+      </div>
+      
+      <div class="info">
+        <p>
+          <strong>Backend:</strong> Flask REST API with SQLAlchemy ORM<br/>
+          <strong>Frontend:</strong> Vue.js 3 with Vite and Vuex<br/>
+          <strong>Database:</strong> SQLite with Redis caching<br/>
+          <strong>Documentation:</strong> Sphinx with Furo theme
+        </p>
+      </div>
+    </main>
+  </body>
+</html>

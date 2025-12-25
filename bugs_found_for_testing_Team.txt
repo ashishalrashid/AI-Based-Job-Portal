@@ -1,0 +1,18 @@
+the front end doesnt accept password less than 8 characters , but it never shows that i need 8 characters
+main branch , backend requirements.txt is not updated.
+Applicant - job opening list , dropdown menu for roles is hard coded
+all drop down regarding titles are hardcorded
+There is no way to go to the home page from the login page
+Able to create hr without the company login, this should not be possible
+there is a duplicate filter button in all candidates page (HR)
+Applicant dashboard is poorly written , rewritten fully.
+HR login is poorly written , rewritten from the ground. (changes made to auth.js)
+HR should not behave this way , there should be no way to create the hr thu register endpoint
+HR creation registering and login is all poorly handled. Investigate if frontend or backend.
+Candidates gender is used nowhere except in all candidates(HR), deleting that row.
+HR dashboard page: Frontend: code for upcoming meeting is not in the expected file (hrdashboard.vue)
+HR dashboard Page : No backend api for prev month stats
+create job api doesnt work as intended (backend)
+scheduling interview need date field
+backend api for interview review is incomplete , should have the ratings as well , refer the frontend page.
+//there is a divide between the frontend definition of shortlisted and backend def : frontend assumes there is a shortlist option and backend assumes shortlisted means select (sent offer letter)

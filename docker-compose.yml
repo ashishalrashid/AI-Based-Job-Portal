@@ -1,0 +1,169 @@
+services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    volumes:
+      - redis_data:/data  # ✅ ADDED: Persist Redis data
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./app/backend
+      dockerfile: Dockerfile
+    command: gunicorn --worker-class eventlet --workers 1 --bind 0.0.0.0:8086 --timeout 300 --graceful-timeout 30 --access-logfile - --error-logfile - --log-level info main:app
+    env_file:
+      - ./app/backend/.env  # ✅ Load from existing .env file
+    ports:
+      - "8086:8086"
+    environment:
+      # Core Flask Configuration
+      FLASK_ENV: production
+      FLASK_DEBUG: "1"
+      SECRET_KEY: ${SECRET_KEY:-default-secret-key-change-in-production}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:-default-jwt-secret-change-in-production}
+      
+      # Redis Configuration (overrides .env for Docker networking)
+      # If REDIS_URL in .env points to external Redis, it will be used
+      # Otherwise defaults to Docker Redis service
+      REDIS_HOST: ${REDIS_HOST:-redis}
+      REDIS_PORT: ${REDIS_PORT:-6379}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+      CELERY_BROKER_URL: ${CELERY_BROKER_URL:-redis://redis:6379/0}
+      CELERY_RESULT_BACKEND: ${CELERY_RESULT_BACKEND:-redis://redis:6379/1}
+      
+      # AI Integration - Google Gemini (Loaded from app/backend/.env)
+      # GEMINI_API_KEY, GEMINI_MODEL, GEMINI_TIMEOUT_SECONDS loaded from .env
+      EVALUATION_TIMEOUT_SECONDS: ${EVALUATION_TIMEOUT_SECONDS:-30}
+      
+      # Azure Speech System (Loaded from app/backend/.env)
+      # AZURE_SPEECH_KEY, AZURE_SPEECH_REGION, USE_AZURE_SPEECH loaded from .env
+      
+      # Video Interview Configuration (Loaded from app/backend/.env)
+      # SESSION_TTL_HOURS, MAXQUESTIONS, MAX_INTERVIEW_MINUTES, VIDEO_CHUNK_INTERVAL_MS
+      # AI_QUESTION_TIMEOUT, THINKING_PAUSE_MIN, THINKING_PAUSE_MAX
+      # USE_ACKNOWLEDGMENTS, ASYNC_AI_PROCESSING, USE_FALLBACK_QUESTIONS loaded from .env
+      
+      # NLP Configuration
+      NLTK_DATA: /usr/local/share/nltk_data
+      USE_NLP_ANALYSIS: ${USE_NLP_ANALYSIS:-true}
+      MIN_ANSWER_LENGTH_FOR_NLP: ${MIN_ANSWER_LENGTH_FOR_NLP:-20}
+      TECH_DEPTH_THRESHOLD: ${TECH_DEPTH_THRESHOLD:-3}
+      
+      # Email Configuration (Flask-Mail)
+      MAIL_SERVER: ${MAIL_SERVER:-localhost}
+      MAIL_PORT: ${MAIL_PORT:-1025}
+      MAIL_USE_TLS: ${MAIL_USE_TLS:-false}
+      MAIL_USE_SSL: ${MAIL_USE_SSL:-false}
+      MAIL_USERNAME: ${MAIL_USERNAME:-}
+      MAIL_PASSWORD: ${MAIL_PASSWORD:-}
+      MAIL_SENDER: ${MAIL_SENDER:-hr@company.com}
+      
+      # Feature Flags
+      ENABLE_CLEANUP_SCHEDULER: ${ENABLE_CLEANUP_SCHEDULER:-true}
+      CLEANUP_INTERVAL_SECONDS: ${CLEANUP_INTERVAL_SECONDS:-300}
+      MAX_STREAM_IDLE_SECONDS: ${MAX_STREAM_IDLE_SECONDS:-300}
+      ENABLE_JSON_VALIDATION: ${ENABLE_JSON_VALIDATION:-true}
+    volumes:
+      - ./app/backend:/app/backend
+      - backend_data:/app/backend/db_dir
+      - ./app/backend/recordings:/app/backend/recordings
+      - ./tests:/app/tests:ro
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8086/health"]
+      interval: 15s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  celery_worker:  # ✅ ADDED: Celery worker for video processing
+    build:
+      context: ./app/backend
+      dockerfile: Dockerfile
+    command: celery -A main.celery worker --loglevel=info --concurrency=2
+    env_file:
+      - ./app/backend/.env  # ✅ Load from existing .env file
+    environment:
+      # Core Configuration
+      FLASK_ENV: production
+      SECRET_KEY: ${SECRET_KEY:-default-secret-key-change-in-production}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:-default-jwt-secret-change-in-production}
+      
+      # Redis Configuration (overrides .env for Docker networking)
+      # If REDIS_URL in .env points to external Redis, it will be used
+      # Otherwise defaults to Docker Redis service
+      REDIS_HOST: ${REDIS_HOST:-redis}
+      REDIS_PORT: ${REDIS_PORT:-6379}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+      CELERY_BROKER_URL: ${CELERY_BROKER_URL:-redis://redis:6379/0}
+      CELERY_RESULT_BACKEND: ${CELERY_RESULT_BACKEND:-redis://redis:6379/1}
+      
+      # AI Integration (Loaded from app/backend/.env)
+      # GEMINI_API_KEY, GEMINI_MODEL, GEMINI_TIMEOUT_SECONDS loaded from .env
+      EVALUATION_TIMEOUT_SECONDS: ${EVALUATION_TIMEOUT_SECONDS:-30}
+      
+      # Azure Speech (Loaded from app/backend/.env)
+      # AZURE_SPEECH_KEY, AZURE_SPEECH_REGION, USE_AZURE_SPEECH loaded from .env
+      
+      # NLP Configuration
+      NLTK_DATA: /usr/local/share/nltk_data
+      USE_NLP_ANALYSIS: ${USE_NLP_ANALYSIS:-true}
+      MIN_ANSWER_LENGTH_FOR_NLP: ${MIN_ANSWER_LENGTH_FOR_NLP:-20}
+      TECH_DEPTH_THRESHOLD: ${TECH_DEPTH_THRESHOLD:-3}
+      
+      # Video Interview Settings (Loaded from app/backend/.env)
+      # SESSION_TTL_HOURS, MAXQUESTIONS, ASYNC_AI_PROCESSING loaded from .env
+    volumes:
+      - ./app/backend:/app/backend
+      - backend_data:/app/backend/db_dir
+      - ./app/backend/recordings:/app/backend/recordings
+    depends_on:
+      - redis
+      - backend
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./app/frontend
+      dockerfile: Dockerfile
+    env_file:
+      - ./app/frontend/.env  # ✅ Load from existing .env file
+    environment:
+      NODE_OPTIONS: --max_old_space_size=2048
+      DOCKER_ENV: "true"
+      BACKEND_HOST: "http://backend:8086"
+      # VITE_BACKEND_URL: Browser connects to localhost (exposed port), not Docker internal
+      # This is used by the browser running on the host machine
+      VITE_BACKEND_URL: ${VITE_BACKEND_URL:-http://localhost:8086}
+    ports:
+      - "5173:5173"
+    depends_on:
+      backend:
+        condition: service_healthy
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+
+  docs:
+    build:
+      context: .
+      dockerfile: docs/Dockerfile
+    ports:
+      - "8090:8090"
+    depends_on:
+      - backend
+      - frontend
+    restart: unless-stopped
+
+volumes:
+  backend_data:
+  redis_data:  # ✅ ADDED: Redis persistence

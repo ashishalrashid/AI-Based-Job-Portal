@@ -1,0 +1,712 @@
+/* Documentation Theme - Aligned with Frontend Design System */
+
+:root {
+  /* Frontend Light Theme Colors */
+  --doc-primary: #065eb5ff;
+  --doc-primary-dark: #054a94;
+  --doc-secondary: #ffd700;
+  --doc-secondary-dark: #e6c200;
+  
+  /* Background & Surface */
+  --doc-bg: #ffffff;
+  --doc-surface: #f8f9fa;
+  --doc-card: #ffffff;
+  
+  /* Text Colors */
+  --doc-text: #222222;
+  --doc-text-muted: #64748b;
+  --doc-text-light: #94a3b8;
+  
+  /* Borders & Dividers */
+  --doc-border: #e2e8f0;
+  --doc-border-light: #f1f5f9;
+  
+  /* Accents & Highlights */
+  --doc-accent: #065eb5ff;
+  --doc-accent-hover: #054a94;
+  --doc-accent-soft: rgba(6, 94, 181, 0.1);
+  --doc-accent-soft-hover: rgba(6, 94, 181, 0.15);
+  
+  /* Code & Syntax */
+  --doc-code-bg: #f1f5f9;
+  --doc-code-text: #065eb5ff;
+  --doc-code-border: #e2e8f0;
+  
+  /* Success, Warning, Error */
+  --doc-success: #10b981;
+  --doc-warning: #f59e0b;
+  --doc-error: #ef4444;
+  --doc-info: #065eb5ff;
+  
+  /* Shadows */
+  --doc-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --doc-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --doc-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --doc-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  
+  /* Spacing */
+  --doc-radius: 0.75rem;
+  --doc-radius-sm: 0.5rem;
+  --doc-radius-lg: 1rem;
+}
+
+/* Dark Theme Support - System preference */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --doc-primary: #0d6efd;
+    --doc-primary-dark: #0b5ed7;
+    --doc-secondary: #ffc107;
+    --doc-secondary-dark: #e6a800;
+    
+    --doc-bg: #121212;
+    --doc-surface: #1e1e1e;
+    --doc-card: #1e1e1e;
+    
+    --doc-text: #eaeaea;
+    --doc-text-muted: #94a3b8;
+    --doc-text-light: #64748b;
+    
+    --doc-border: #2d3748;
+    --doc-border-light: #1a202c;
+    
+    --doc-accent: #0d6efd;
+    --doc-accent-hover: #0b5ed7;
+    --doc-accent-soft: rgba(13, 110, 253, 0.15);
+    --doc-accent-soft-hover: rgba(13, 110, 253, 0.25);
+    
+    --doc-code-bg: #1e293b;
+    --doc-code-text: #60a5fa;
+    --doc-code-border: #334155;
+  }
+}
+
+/* Ensure dark theme applies when data-theme="dark" */
+[data-theme="dark"] {
+  --doc-primary: #0d6efd;
+  --doc-primary-dark: #0b5ed7;
+  --doc-secondary: #ffc107;
+  --doc-secondary-dark: #e6a800;
+  
+  --doc-bg: #121212;
+  --doc-surface: #1e1e1e;
+  --doc-card: #1e1e1e;
+  
+  --doc-text: #eaeaea;
+  --doc-text-muted: #94a3b8;
+  --doc-text-light: #64748b;
+  
+  --doc-border: #2d3748;
+  --doc-border-light: #1a202c;
+  
+  --doc-accent: #0d6efd;
+  --doc-accent-hover: #0b5ed7;
+  --doc-accent-soft: rgba(13, 110, 253, 0.15);
+  --doc-accent-soft-hover: rgba(13, 110, 253, 0.25);
+  
+  --doc-code-bg: #1e293b;
+  --doc-code-text: #60a5fa;
+  --doc-code-border: #334155;
+}
+
+/* Light theme explicit (when data-theme="light") */
+[data-theme="light"] {
+  --doc-primary: #065eb5ff;
+  --doc-primary-dark: #054a94;
+  --doc-secondary: #ffd700;
+  --doc-secondary-dark: #e6c200;
+  
+  --doc-bg: #ffffff;
+  --doc-surface: #f8f9fa;
+  --doc-card: #ffffff;
+  
+  --doc-text: #222222;
+  --doc-text-muted: #64748b;
+  --doc-text-light: #94a3b8;
+  
+  --doc-border: #e2e8f0;
+  --doc-border-light: #f1f5f9;
+  
+  --doc-accent: #065eb5ff;
+  --doc-accent-hover: #054a94;
+  --doc-accent-soft: rgba(6, 94, 181, 0.1);
+  --doc-accent-soft-hover: rgba(6, 94, 181, 0.15);
+  
+  --doc-code-bg: #f1f5f9;
+  --doc-code-text: #065eb5ff;
+  --doc-code-border: #e2e8f0;
+}
+
+/* Base Typography - Match Frontend Font Stack */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 
+               'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', 
+               sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: var(--doc-bg);
+  color: var(--doc-text);
+  line-height: 1.6;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Header Styling */
+.bd-header {
+  background: var(--doc-card);
+  border-bottom: 1px solid var(--doc-border);
+  box-shadow: var(--doc-shadow-sm);
+  backdrop-filter: blur(10px);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.bd-header .bd-navbar-brand {
+  color: var(--doc-primary);
+  font-weight: 600;
+}
+
+.bd-header .bd-navbar-brand:hover {
+  color: var(--doc-primary-dark);
+}
+
+/* Sidebar Styling */
+.bd-sidebar-primary,
+.bd-sidebar-secondary {
+  background: var(--doc-surface);
+  border-right: 1px solid var(--doc-border);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.bd-sidebar .bd-nav li > a {
+  color: var(--doc-text-muted);
+  border-radius: var(--doc-radius-sm);
+  padding: 0.5rem 0.75rem;
+  margin: 0.25rem 0;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.bd-sidebar .bd-nav li > a:hover {
+  background: var(--doc-accent-soft);
+  color: var(--doc-primary);
+  transform: translateX(2px);
+}
+
+.bd-sidebar .bd-nav li.current > a {
+  background: var(--doc-accent-soft);
+  color: var(--doc-primary);
+  font-weight: 600;
+  border-left: 3px solid var(--doc-primary);
+}
+
+/* Content Area */
+.bd-content .bd-article-container {
+  background: var(--doc-card);
+  border-radius: var(--doc-radius-lg);
+  padding: 2.5rem;
+  border: 1px solid var(--doc-border);
+  box-shadow: var(--doc-shadow-md);
+  margin: 1.5rem 0;
+}
+
+/* Typography */
+.bd-content h1 {
+  color: var(--doc-text);
+  font-weight: 700;
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  letter-spacing: -0.02em;
+  border-bottom: 2px solid var(--doc-border);
+  padding-bottom: 0.5rem;
+}
+
+.bd-content h2 {
+  color: var(--doc-text);
+  font-weight: 600;
+  font-size: 2rem;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  letter-spacing: -0.01em;
+}
+
+.bd-content h3 {
+  color: var(--doc-text);
+  font-weight: 600;
+  font-size: 1.5rem;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.bd-content h4 {
+  color: var(--doc-text);
+  font-weight: 600;
+  font-size: 1.25rem;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+p, li, td, th {
+  color: var(--doc-text-muted);
+  line-height: 1.7;
+}
+
+/* Links */
+a, .reference {
+  color: var(--doc-primary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+a:hover, .reference:hover {
+  color: var(--doc-primary-dark);
+  text-decoration: underline;
+}
+
+/* Code Blocks */
+code.literal, span.pre {
+  background: var(--doc-code-bg);
+  color: var(--doc-code-text);
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--doc-radius-sm);
+  font-weight: 500;
+  font-size: 0.9em;
+  border: 1px solid var(--doc-code-border);
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+}
+
+.highlight {
+  background: var(--doc-code-bg);
+  border: 1px solid var(--doc-code-border);
+  border-radius: var(--doc-radius);
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+.highlight pre {
+  background: transparent;
+  color: var(--doc-text);
+  margin: 0;
+  padding: 0;
+}
+
+/* Admonitions (Tips, Notes, Warnings) */
+.admonition {
+  border-left: 4px solid var(--doc-primary);
+  background: var(--doc-accent-soft);
+  border-radius: var(--doc-radius);
+  padding: 1rem 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.admonition.tip {
+  border-left-color: var(--doc-success);
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.admonition.note {
+  border-left-color: var(--doc-info);
+  background: var(--doc-accent-soft);
+}
+
+.admonition.warning {
+  border-left-color: var(--doc-warning);
+  background: rgba(245, 158, 11, 0.1);
+}
+
+.admonition.danger {
+  border-left-color: var(--doc-error);
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.admonition-title {
+  color: var(--doc-primary);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+/* Tables */
+table.docutils {
+  border: 1px solid var(--doc-border);
+  border-radius: var(--doc-radius);
+  overflow: hidden;
+  margin: 1.5rem 0;
+  box-shadow: var(--doc-shadow-sm);
+}
+
+table.docutils thead {
+  background: var(--doc-surface);
+}
+
+table.docutils th {
+  background: var(--doc-surface);
+  color: var(--doc-text);
+  font-weight: 600;
+  padding: 0.75rem 1rem;
+  border-bottom: 2px solid var(--doc-border);
+}
+
+table.docutils td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--doc-border-light);
+  color: var(--doc-text-muted);
+}
+
+table.docutils tr:hover {
+  background: var(--doc-accent-soft);
+}
+
+table.docutils tr:last-child td {
+  border-bottom: none;
+}
+
+/* Breadcrumbs */
+.bd-breadcrumbs {
+  background: transparent;
+  color: var(--doc-text-muted);
+  padding: 0.5rem 0;
+}
+
+.bd-breadcrumbs a {
+  color: var(--doc-primary);
+}
+
+.bd-breadcrumbs a:hover {
+  color: var(--doc-primary-dark);
+}
+
+/* Back to Main Menu Button - High Contrast for Accessibility */
+.back-to-main {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  z-index: 1000;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: var(--doc-primary);
+  color: #ffffff !important;
+  border: 2px solid var(--doc-primary);
+  border-radius: var(--doc-radius);
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+  box-shadow: var(--doc-shadow-md);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  font-family: inherit;
+  min-width: 120px;
+  justify-content: center;
+}
+
+/* Ensure white text on primary background (WCAG AA: 4.5:1 contrast) */
+.back-to-main,
+.back-to-main:visited {
+  color: #ffffff !important;
+}
+
+.back-to-main:hover,
+.back-to-main:focus {
+  background: var(--doc-primary-dark);
+  border-color: var(--doc-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--doc-shadow-lg);
+  color: #ffffff !important;
+  text-decoration: none;
+  outline: 2px solid var(--doc-primary);
+  outline-offset: 2px;
+}
+
+.back-to-main:active {
+  transform: translateY(0);
+  box-shadow: var(--doc-shadow-md);
+}
+
+.back-to-main::before {
+  content: "←";
+  font-size: 1.2rem;
+  margin-right: 0.25rem;
+  color: #ffffff !important;
+}
+
+/* Back to Main Button - Theme-aware with proper contrast */
+.back-to-main {
+  background: var(--doc-primary) !important;
+  border-color: var(--doc-primary) !important;
+  color: #ffffff !important;
+  transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease !important;
+}
+
+.back-to-main:hover,
+.back-to-main:focus {
+  background: var(--doc-primary-dark) !important;
+  border-color: var(--doc-primary-dark) !important;
+  color: #ffffff !important;
+}
+
+/* Ensure button maintains contrast in both themes */
+[data-theme="dark"] .back-to-main,
+[data-theme="light"] .back-to-main {
+  background: var(--doc-primary) !important;
+  border-color: var(--doc-primary) !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .back-to-main:hover,
+[data-theme="dark"] .back-to-main:focus,
+[data-theme="light"] .back-to-main:hover,
+[data-theme="light"] .back-to-main:focus {
+  background: var(--doc-primary-dark) !important;
+  border-color: var(--doc-primary-dark) !important;
+  color: #ffffff !important;
+}
+
+/* API Endpoint Styling */
+.endpoint {
+  background: var(--doc-surface);
+  border-left: 4px solid var(--doc-primary);
+  border-radius: var(--doc-radius-sm);
+  padding: 1rem 1.5rem;
+  margin: 1rem 0;
+}
+
+.endpoint-method {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--doc-radius-sm);
+  font-weight: 600;
+  font-size: 0.85rem;
+  margin-right: 0.5rem;
+}
+
+.endpoint-method.get {
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--doc-success);
+}
+
+.endpoint-method.post {
+  background: rgba(6, 94, 181, 0.15);
+  color: var(--doc-primary);
+}
+
+.endpoint-method.put {
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--doc-warning);
+}
+
+.endpoint-method.delete {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--doc-error);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .bd-content .bd-article-container {
+    padding: 1.5rem;
+    border-radius: var(--doc-radius);
+  }
+  
+  .bd-content h1 {
+    font-size: 2rem;
+  }
+  
+  .bd-content h2 {
+    font-size: 1.75rem;
+  }
+  
+  .back-to-main {
+    top: 0.75rem;
+    right: 0.75rem;
+    padding: 0.6rem 1rem;
+    font-size: 0.85rem;
+    min-width: 100px;
+  }
+  
+  /* Stack buttons on mobile */
+  .bd-header .header-items {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .theme-toggle,
+  .sidebar-toggle {
+    min-width: 40px !important;
+    min-height: 40px !important;
+    padding: 0.4rem !important;
+  }
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--doc-surface);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--doc-border);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--doc-text-light);
+}
+
+/* Selection */
+::selection {
+  background: var(--doc-accent-soft);
+  color: var(--doc-primary);
+}
+
+/* Furo Theme Toggle Button Styling - High Contrast */
+.theme-toggle,
+.theme-toggle button,
+button.theme-toggle,
+.theme-toggle input[type="checkbox"] {
+  background: var(--doc-surface) !important;
+  border: 2px solid var(--doc-border) !important;
+  border-radius: var(--doc-radius-sm) !important;
+  color: var(--doc-text) !important;
+  padding: 0.5rem 0.75rem !important;
+  font-weight: 500 !important;
+  transition: all 0.3s ease !important;
+  cursor: pointer !important;
+  min-width: 44px !important;
+  min-height: 44px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Ensure proper contrast in light theme */
+[data-theme="light"] .theme-toggle,
+[data-theme="light"] .theme-toggle button,
+[data-theme="light"] button.theme-toggle {
+  background: #f8f9fa !important;
+  border-color: #e2e8f0 !important;
+  color: #222222 !important;
+}
+
+/* Ensure proper contrast in dark theme */
+[data-theme="dark"] .theme-toggle,
+[data-theme="dark"] .theme-toggle button,
+[data-theme="dark"] button.theme-toggle {
+  background: #1e1e1e !important;
+  border-color: #2d3748 !important;
+  color: #eaeaea !important;
+}
+
+.theme-toggle:hover,
+.theme-toggle:focus,
+button.theme-toggle:hover,
+button.theme-toggle:focus {
+  background: var(--doc-accent-soft) !important;
+  border-color: var(--doc-primary) !important;
+  color: var(--doc-primary) !important;
+  outline: 2px solid var(--doc-primary) !important;
+  outline-offset: 2px !important;
+}
+
+/* Theme toggle icon styling */
+.theme-toggle svg,
+button.theme-toggle svg,
+.theme-toggle .icon,
+.theme-toggle .icon svg {
+  width: 20px !important;
+  height: 20px !important;
+  fill: currentColor !important;
+  stroke: currentColor !important;
+  color: inherit !important;
+  transition: color 0.3s ease !important;
+}
+
+/* Ensure icon is visible in both themes */
+[data-theme="light"] .theme-toggle svg,
+[data-theme="light"] .theme-toggle .icon {
+  color: #222222 !important;
+}
+
+[data-theme="dark"] .theme-toggle svg,
+[data-theme="dark"] .theme-toggle .icon {
+  color: #eaeaea !important;
+}
+
+/* Furo sidebar theme toggle - High Contrast */
+.sidebar-toggle,
+.sidebar-toggle button {
+  background: var(--doc-surface) !important;
+  border: 2px solid var(--doc-border) !important;
+  border-radius: var(--doc-radius-sm) !important;
+  color: var(--doc-text) !important;
+  padding: 0.5rem !important;
+  min-width: 44px !important;
+  min-height: 44px !important;
+  transition: all 0.3s ease !important;
+}
+
+/* Light theme sidebar toggle */
+[data-theme="light"] .sidebar-toggle,
+[data-theme="light"] .sidebar-toggle button {
+  background: #f8f9fa !important;
+  border-color: #e2e8f0 !important;
+  color: #222222 !important;
+}
+
+/* Dark theme sidebar toggle */
+[data-theme="dark"] .sidebar-toggle,
+[data-theme="dark"] .sidebar-toggle button {
+  background: #1e1e1e !important;
+  border-color: #2d3748 !important;
+  color: #eaeaea !important;
+}
+
+.sidebar-toggle:hover,
+.sidebar-toggle:focus {
+  background: var(--doc-accent-soft) !important;
+  border-color: var(--doc-primary) !important;
+  color: var(--doc-primary) !important;
+  outline: 2px solid var(--doc-primary) !important;
+  outline-offset: 2px !important;
+}
+
+/* Header buttons container */
+.bd-header .header-items {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* Ensure theme toggle is visible in header */
+.bd-header .theme-toggle {
+  margin-left: auto;
+}
+
+/* Focus States - Enhanced for Accessibility */
+a:focus,
+button:focus,
+.theme-toggle:focus,
+.sidebar-toggle:focus {
+  outline: 2px solid var(--doc-primary) !important;
+  outline-offset: 2px !important;
+  border-radius: var(--doc-radius-sm) !important;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .back-to-main {
+    border-width: 3px;
+    font-weight: 700;
+  }
+  
+  .theme-toggle,
+  .sidebar-toggle {
+    border-width: 3px;
+  }
+  
+  a:focus,
+  button:focus {
+    outline-width: 3px;
+  }
+}

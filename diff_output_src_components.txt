@@ -1,0 +1,2087 @@
+diff --git a/app/frontend/src/components/AIQuestion.vue b/app/frontend/src/components/AIQuestion.vue
+new file mode 100644
+index 0000000..22be681
+--- /dev/null
++++ b/app/frontend/src/components/AIQuestion.vue
+@@ -0,0 +1,55 @@
++<template>
++  <div class="ai-question" :class="{ speaking: isSpeaking }" role="region" aria-live="polite" aria-atomic="true">
++    <h3>{{ question || 'Waiting for next question...' }}</h3>
++    <p v-if="isSpeaking" class="speaking-indicator">
++      <span class="dot" aria-hidden="true"></span> AI is speaking...
++    </p>
++  </div>
++</template>
++
++<script setup>
++const props = defineProps({
++  question: String,
++  isSpeaking: Boolean
++})
++</script>
++
++<style scoped>
++.ai-question {
++  background: #eef2ff;
++  border-radius: 12px;
++  padding: 1.25rem 1.5rem;
++  font-size: 1.1rem;
++  color: #3730a3;
++  min-height: 72px;
++  transition: background-color 0.3s ease;
++}
++
++.ai-question.speaking {
++  background: #c7d2fe;
++}
++
++.speaking-indicator {
++  margin-top: 0.5rem;
++  font-style: italic;
++  color: #4f46e5;
++  font-weight: 600;
++  display: flex;
++  align-items: center;
++  gap: 0.5rem;
++}
++
++.dot {
++  width: 0.8rem;
++  height: 0.8rem;
++  background: #4f46e5;
++  border-radius: 50%;
++  animation: pulse 1.2s infinite ease-in-out;
++}
++
++@keyframes pulse {
++  0%, 100% { opacity: 1; }
++  50% { opacity: 0.4; }
++}
++</style>
++
+diff --git a/app/frontend/src/components/ConversationHistory.vue b/app/frontend/src/components/ConversationHistory.vue
+new file mode 100644
+index 0000000..a21a4aa
+--- /dev/null
++++ b/app/frontend/src/components/ConversationHistory.vue
+@@ -0,0 +1,177 @@
++<template>
++  <div class="conversation-history" ref="scrollContainer">
++    <!-- Past Q&A Messages -->
++    <div
++      v-for="(item, index) in conversationHistory"
++      :key="index"
++      class="message"
++      :class="item.type"
++    >
++      <div class="message-header">
++        <span class="sender">
++          {{ item.type === 'question' ? '🤖 AI Interviewer' : '👤 You' }}
++        </span>
++        <span v-if="item.questionNumber" class="question-badge">
++          Q{{ item.questionNumber }}
++        </span>
++      </div>
++      <p class="message-text">{{ item.text }}</p>
++      <span class="message-time">{{ formatTime(item.timestamp) }}</span>
++    </div>
++
++    <!-- Empty state -->
++    <div v-if="conversationHistory.length === 0" class="empty-state">
++      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
++        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
++      </svg>
++      <p>Your interview conversation will appear here</p>
++    </div>
++  </div>
++</template>
++
++<script setup>
++import { ref, watch, nextTick } from 'vue'
++
++const props = defineProps({
++  conversationHistory: {
++    type: Array,
++    default: () => []
++  }
++})
++
++const scrollContainer = ref(null)
++
++// Auto-scroll to bottom when new messages arrive
++watch(() => props.conversationHistory.length, async () => {
++  await nextTick()
++  if (scrollContainer.value) {
++    scrollContainer.value.scrollTop = scrollContainer.value.scrollHeight
++  }
++}, { flush: 'post' })
++
++// Format time helper
++function formatTime(date) {
++  if (!date) return ''
++  return new Date(date).toLocaleTimeString('en-US', {
++    hour: '2-digit',
++    minute: '2-digit'
++  })
++}
++</script>
++
++<style scoped>
++.conversation-history {
++  flex: 1;
++  overflow-y: auto;
++  padding: 1.5rem;
++  display: flex;
++  flex-direction: column;
++  gap: 1rem;
++  background: #f9fafb;
++}
++
++.message {
++  background: #fff;
++  border-radius: 12px;
++  padding: 1rem;
++  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
++  animation: slideIn 0.3s ease;
++}
++
++@keyframes slideIn {
++  from {
++    opacity: 0;
++    transform: translateY(10px);
++  }
++  to {
++    opacity: 1;
++    transform: translateY(0);
++  }
++}
++
++.message.question {
++  background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
++  border-left: 4px solid #667eea;
++}
++
++.message.answer {
++  background: #f0fdf4;
++  border-left: 4px solid #22c55e;
++  margin-left: 12px;
++}
++
++.message-header {
++  display: flex;
++  justify-content: space-between;
++  align-items: center;
++  margin-bottom: 0.5rem;
++}
++
++.sender {
++  font-size: 0.85rem;
++  font-weight: 600;
++  color: #4b5563;
++}
++
++.question-badge {
++  font-size: 0.75rem;
++  font-weight: 600;
++  color: #667eea;
++  background: #667eea15;
++  padding: 2px 8px;
++  border-radius: 8px;
++}
++
++.message-text {
++  margin: 0;
++  color: #1e293b;
++  line-height: 1.6;
++  font-size: 0.95rem;
++}
++
++.message-time {
++  font-size: 0.75rem;
++  color: #94a3b8;
++  margin-top: 0.5rem;
++  display: block;
++}
++
++.empty-state {
++  display: flex;
++  flex-direction: column;
++  align-items: center;
++  justify-content: center;
++  padding: 3rem 1rem;
++  color: #94a3b8;
++  text-align: center;
++}
++
++.empty-state svg {
++  margin-bottom: 1rem;
++  opacity: 0.5;
++}
++
++.empty-state p {
++  margin: 0;
++  font-size: 0.95rem;
++}
++
++/* Scrollbar styling */
++.conversation-history::-webkit-scrollbar {
++  width: 6px;
++}
++
++.conversation-history::-webkit-scrollbar-track {
++  background: transparent;
++}
++
++.conversation-history::-webkit-scrollbar-thumb {
++  background: #e2e8f0;
++  border-radius: 3px;
++}
++
++.conversation-history::-webkit-scrollbar-thumb:hover {
++  background: #cbd5e1;
++}
++</style>
++
+diff --git a/app/frontend/src/components/InterviewScreen.vue b/app/frontend/src/components/InterviewScreen.vue
+new file mode 100644
+index 0000000..cfe1db8
+--- /dev/null
++++ b/app/frontend/src/components/InterviewScreen.vue
+@@ -0,0 +1,959 @@
++<template>
++  <div class="interview-screen" :class="{ 'sidebar-open': showSidebar }">
++    <!-- Top Bar with title and sidebar toggle -->
++    <header class="top-bar">
++      <h2>{{ interviewData.title }}</h2>
++      <button class="btn-sidebar-toggle" @click="toggleSidebar" aria-label="Toggle sidebar">
++        ☰
++      </button>
++    </header>
++
++    <main class="main-content">
++      <!-- Video container -->
++      <section class="video-container">
++        <VideoFeed
++          :enabled="selfVideoEnabled"
++          ref="candidateVideo"
++          aria-label="Your video feed"
++        />
++      </section>
++
++      <!-- Content area: AI Question + Transcript + Controls -->
++      <section class="content-area">
++        <ConversationHistory :conversationHistory="conversationHistory" />
++        <div class="input-section">
++          <AIQuestion
++            :question="currentQuestion"
++            :isSpeaking="aiSpeaking"
++          />
++
++          <Transcript
++            :finalTranscript="currentTranscript"
++            :interimTranscript="interimTranscript"
++            :isRecording="isRecording"
++            @submitManualAnswer="handleManualSubmit"
++          />
++
++          <Controls
++            :micEnabled="selfAudioEnabled"
++            :videoEnabled="selfVideoEnabled"
++            :isRecording="isRecording"
++            :isProcessing="isProcessing"
++            :aiSpeaking="aiSpeaking"
++            @toggleMic="toggleMic"
++            @toggleVideo="toggleVideo"
++            @startSpeaking="startSpeaking"
++            @stopSpeaking="stopSpeaking"
++            @endInterview="handleManualEnd"
++          />
++        </div>
++      </section>
++    </main>
++
++    <!-- Sidebar with interview progress and info -->
++    <Sidebar
++      v-if="showSidebar"
++      :key="sidebarKey"
++      :questionCount="questionCount || 0"
++      :timeElapsed="timeElapsed || '00:00'"
++      :progressPercent="progressPercent || 0"
++      :aiSpeaking="aiSpeaking || false"
++      :isRecording="isRecording || false"
++      :evaluation="evaluation || null"
++      @closeSidebar="closeSidebar"
++    />
++
++    <!-- Buffering Warning -->
++    <div v-if="showBufferingWarning" class="buffering-warning" role="alert">
++      ⚠️ Connection issue - buffering {{ totalPendingChunks }} chunks
++    </div>
++  </div>
++</template>
++
++<script setup>
++import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
++import { connectSocket, getSocket } from '@/services/socket'
++import VideoFeed from '@/components/VideoFeed.vue'
++import AIQuestion from '@/components/AIQuestion.vue'
++import Transcript from '@/components/Transcript.vue'
++import Controls from '@/components/controls.vue'
++import Sidebar from '@/components/visidebar.vue'
++import ConversationHistory from '@/components/ConversationHistory.vue'
++import { useStore } from 'vuex'
++import { useRouter } from 'vue-router'
++
++const store = useStore()
++const router = useRouter()
++const props = defineProps({
++  sessionId: String,
++  interviewData: Object
++})
++
++const isMounted = ref(false)
++const isDestroying = ref(false)
++
++// Reactive state
++const selfVideoEnabled = ref(true)
++const selfAudioEnabled = ref(true)
++const aiSpeaking = ref(false)
++const isRecording = ref(false)
++const isProcessing = ref(false)
++const waitingForFinal = ref(false)
++const currentQuestion = ref('')
++const currentTranscript = ref('')
++const interimTranscript = ref('')
++const questionCount = ref(0)
++const timeElapsed = ref('00:00')
++const showSidebar = ref(false)
++const showBufferingWarning = ref(false)
++const totalPendingChunks = ref(0)
++const evaluation = ref(null)
++const conversationHistory = ref([])
++
++// Media recording refs and buffers
++const localStream = ref(null)
++const videoRecorder = ref(null)
++const audioRecorder = ref(null)
++const videoChunkNumber = ref(0)
++const audioChunkNumber = ref(0)
++const pendingVideoChunks = ref([])
++const pendingAudioChunks = ref([])
++
++const MAX_PENDING_CHUNKS = 50
++const MAX_VIDEO_INFLIGHT = 5
++const MAX_AUDIO_INFLIGHT = 5
++
++// STT
++const recognition = ref(null)
++const isListening = ref(false)
++
++// Flight control
++const videoInFlight = ref(0)
++const audioInFlight = ref(0)
++const isFlushing = ref(false)
++
++// Video element ref - FIXED for VideoFeed component
++const candidateVideo = ref(null)
++
++const progressPercent = computed(() => Math.min((questionCount.value / 10) * 100, 100))
++const sidebarKey = ref(0)
++
++// 🔥 PERFECT: Timer for timeElapsed - FIXED
++let timerInterval = null
++function startTimer() {
++  let seconds = 0
++  timerInterval = setInterval(() => {
++    seconds++
++    const mins = Math.floor(seconds / 60).toString().padStart(2, '0')
++    const secs = (seconds % 60).toString().padStart(2, '0')
++    timeElapsed.value = `${mins}:${secs}`
++  }, 1000)
++}
++
++// 🔥 PERFECT: Fire-and-forget chunk flushing + DEBUG LOGS
++async function flushPendingChunks() {
++  if (isFlushing.value) return
++
++  const sock = getSocket()
++  if (!sock?.connected) return
++
++  isFlushing.value = true
++  try {
++    // Video chunks
++    while (pendingVideoChunks.value.length > 0 && videoInFlight.value < MAX_VIDEO_INFLIGHT) {
++      const chunk = pendingVideoChunks.value.shift()
++      sock.emit('videoChunk', {
++        sessionId: props.sessionId,
++        chunkNumber: chunk.number,
++        data: chunk.data
++      })
++      videoInFlight.value++
++      console.log(`📤 Video #${chunk.number} sent (${pendingVideoChunks.value.length} left)`)
++    }
++
++    // Audio chunks
++    while (pendingAudioChunks.value.length > 0 && audioInFlight.value < MAX_AUDIO_INFLIGHT) {
++      const chunk = pendingAudioChunks.value.shift()
++      sock.emit('audioChunk', {
++        sessionId: props.sessionId,
++        chunkNumber: chunk.number,
++        data: chunk.data
++      })
++      audioInFlight.value++
++      console.log(`🎤 Audio #${chunk.number} sent (${pendingAudioChunks.value.length} left)`)
++    }
++  } finally {
++    isFlushing.value = false
++  }
++}
++
++// 🔥 PERFECT: Emergency flush ALL chunks
++async function flushAllChunks() {
++  return new Promise(resolve => {
++    let attempts = 0
++    const maxAttempts = 15
++
++    const tryFlush = () => {
++      if (attempts++ >= maxAttempts) {
++        console.warn('⚠️ Emergency flush timeout')
++        resolve()
++        return
++      }
++
++      const sock = getSocket()
++      if (!sock?.connected) {
++        setTimeout(tryFlush, 200)
++        return
++      }
++
++      const videoSent = pendingVideoChunks.value.length
++      const audioSent = pendingAudioChunks.value.length
++
++      // Clear ALL buffers
++      pendingVideoChunks.value = []
++      pendingAudioChunks.value = []
++      videoInFlight.value = 0
++      audioInFlight.value = 0
++
++      console.log(`🚀 EMERGENCY FLUSH COMPLETE: Video=${videoSent}, Audio=${audioSent}`)
++      resolve()
++    }
++
++    tryFlush()
++  })
++}
++
++function bufferChunk(buffer, chunk) {
++  if (buffer.length >= MAX_PENDING_CHUNKS) {
++    buffer.shift()
++  }
++  buffer.push(chunk)
++}
++
++// 🔥 PERFECT: Sidebar handlers
++function toggleSidebar() {
++  if (!isMounted.value || isDestroying.value) return
++  showSidebar.value = !showSidebar.value
++  sidebarKey.value++
++}
++
++function closeSidebar() {
++  showSidebar.value = false
++  sidebarKey.value = 0
++}
++
++// 🔥 PERFECT: Media controls
++function toggleMic() {
++  selfAudioEnabled.value = !selfAudioEnabled.value
++  localStream.value?.getAudioTracks().forEach(track => track.enabled = selfAudioEnabled.value)
++}
++
++function toggleVideo() {
++  selfVideoEnabled.value = !selfVideoEnabled.value
++  localStream.value?.getVideoTracks().forEach(track => track.enabled = selfVideoEnabled.value)
++}
++
++// 🔥 PERFECT: Media initialization
++async function initializeMedia() {
++  try {
++    localStream.value = await navigator.mediaDevices.getUserMedia({
++      video: { width: 1280, height: 720, facingMode: 'user' },
++      audio: { echoCancellation: true, noiseSuppression: true }
++    })
++
++    localStream.value.getVideoTracks().forEach(track => track.enabled = selfVideoEnabled.value)
++    localStream.value.getAudioTracks().forEach(track => track.enabled = selfAudioEnabled.value)
++
++    await nextTick()
++    if (candidateVideo.value) {
++      candidateVideo.value.srcObject = localStream.value  // FIXED: Direct video element access
++    }
++  } catch (err) {
++    console.error('❌ Media init failed:', err)
++    alert('Please allow camera and microphone access')
++  }
++}
++
++function chooseVideoMimeType() {
++  return MediaRecorder.isTypeSupported('video/webm;codecs=vp9') ? 'video/webm;codecs=vp9' :
++         MediaRecorder.isTypeSupported('video/webm;codecs=vp8') ? 'video/webm;codecs=vp8' :
++         'video/webm'
++}
++
++// 🔥 PERFECT: Continuous video recording
++function startContinuousVideoRecording() {
++  if (!localStream.value || videoRecorder.value?.state === 'recording') return
++
++  const mimeType = chooseVideoMimeType()
++  videoRecorder.value = new MediaRecorder(localStream.value, {
++    mimeType,
++    videoBitsPerSecond: 2500000
++  })
++
++  videoRecorder.value.ondataavailable = event => {
++    if (event.data?.size > 0) {
++      const blob = new Blob([event.data], { type: mimeType })
++      bufferChunk(pendingVideoChunks.value, { number: videoChunkNumber.value++, data: blob })
++      flushPendingChunks()
++    }
++  }
++
++  try {
++    videoRecorder.value.start(4000)
++    console.log('🎥 Video recording → CONTINUOUS (100+ chunks expected)')
++  } catch (e) {
++    console.error('❌ Video recording failed:', e)
++  }
++}
++
++// 🔥 PERFECT: Continuous audio recording
++function startContinuousAudioRecording() {
++  if (!localStream.value || audioRecorder.value?.state === 'recording') return
++
++  const audioTracks = localStream.value.getAudioTracks()
++  if (!audioTracks.length) return
++
++  const audioStream = new MediaStream(audioTracks)
++  audioRecorder.value = new MediaRecorder(audioStream, { mimeType: 'audio/webm' })
++
++  audioRecorder.value.ondataavailable = event => {
++    if (event.data?.size > 0) {
++      const blob = new Blob([event.data], { type: 'audio/webm' })
++      bufferChunk(pendingAudioChunks.value, { number: audioChunkNumber.value++, data: blob })
++      flushPendingChunks()
++    }
++  }
++
++  try {
++    audioRecorder.value.start(4000)
++    console.log('🎤 Audio recording → CONTINUOUS (100+ chunks expected)')
++  } catch (e) {
++    console.error('❌ Audio recording failed:', e)
++  }
++}
++
++// 🔥 PERFECT: Stop recorders (generates FINAL chunks)
++function stopRecording() {
++  if (videoRecorder.value?.state !== 'inactive') {
++    videoRecorder.value.stop()
++    console.log('⏹️ Video recorder stopped → FINAL chunk generated')
++  }
++  if (audioRecorder.value?.state !== 'inactive') {
++    audioRecorder.value.stop()
++    console.log('⏹️ Audio recorder stopped → FINAL chunk generated')
++  }
++}
++
++// 🔥 PERFECT: Speech recognition
++function initSpeechRecognition() {
++  if (!('webkitSpeechRecognition' in window)) {
++    console.warn('⚠️ Browser STT not supported')
++    return
++  }
++
++  recognition.value = new (window.webkitSpeechRecognition || window.SpeechRecognition)()
++  recognition.value.continuous = true
++  recognition.value.interimResults = true
++  recognition.value.lang = 'en-US'
++  recognition.value.silenceDetectionDelay = 1000
++
++  recognition.value.onstart = () => {
++    isListening.value = true
++    console.log('🎤 STT → ACTIVE')
++  }
++
++  recognition.value.onresult = event => {
++    let interim = '', final = ''
++    for (let i = event.resultIndex; i < event.results.length; ++i) {
++      const transcript = event.results[i][0].transcript
++      event.results[i].isFinal ? (final += transcript + ' ') : (interim += transcript)
++    }
++    if (final) {
++      currentTranscript.value += final
++      console.log('📝 STT Final:', final.trim())
++    }
++    interimTranscript.value = interim
++  }
++
++  recognition.value.onerror = event => {
++    console.error('❌ STT error:', event.error)
++  }
++
++  recognition.value.onend = () => {
++    console.log('🔄 STT ended → auto-restart')
++    if (isRecording.value) {
++      setTimeout(() => recognition.value?.start(), 50)
++    }
++  }
++}
++
++// 🔥 PERFECT: Manual submit
++function handleManualSubmit(answer) {
++  const sock = getSocket()
++  if (sock && answer.trim()) {
++    const trimmedAnswer = answer.trim()
++    
++    // ✅ Add answer to conversation history immediately
++    conversationHistory.value.push({
++      type: 'answer',
++      text: trimmedAnswer,
++      timestamp: new Date()
++    })
++    
++    sock.emit('finishSpeaking', {
++      sessionId: props.sessionId,
++      answer: trimmedAnswer
++    })
++    currentTranscript.value = ''
++    console.log('✍️ Manual answer submitted')
++  }
++}
++
++// 🔥 PERFECT: Graceful manual end → TTS → 4-phase shutdown
++async function handleManualEnd() {
++  console.log('🛑 MANUAL END → Starting graceful shutdown')
++  speakQuestion('Okay, thank you for your time. You can leave the meeting now.', true)
++}
++
++// ✅ Get best available female voice - with proper loading
++let voicesLoaded = false
++let cachedFemaleVoice = null
++
++function loadVoices() {
++  if (voicesLoaded && cachedFemaleVoice) {
++    return cachedFemaleVoice
++  }
++  
++  const voices = window.speechSynthesis.getVoices()
++  if (voices.length === 0) {
++    console.warn('⚠️ No voices loaded yet, will retry')
++    return null
++  }
++  
++  voicesLoaded = true
++  
++  // Preferred female voices (in order of preference)
++  const preferredVoices = [
++    'Samantha',           // macOS - Natural female voice
++    'Karen',              // macOS - Australian female
++    'Moira',              // macOS - Irish female
++    'Tessa',              // macOS - South African female
++    'Google UK English Female',  // Chrome - British female
++    'Microsoft Zira - English (United States)',  // Windows - Natural female
++    'Microsoft Hazel - English (Great Britain)', // Windows - British female
++    'en-US-Neural2-F',    // Google Cloud TTS (if available)
++    'en-GB-Neural-A',     // Google Cloud TTS (if available)
++  ]
++  
++  // Try to find a preferred voice
++  for (const preferred of preferredVoices) {
++    const voice = voices.find(v => 
++      v.name.includes(preferred) || 
++      v.name.toLowerCase().includes(preferred.toLowerCase())
++    )
++    if (voice) {
++      console.log(`✅ Using preferred voice: ${voice.name}`)
++      cachedFemaleVoice = voice
++      return voice
++    }
++  }
++  
++  // Fallback: Find any female voice
++  const femaleVoice = voices.find(v => {
++    const name = v.name.toLowerCase()
++    return v.lang.startsWith('en') && (
++      name.includes('female') ||
++      name.includes('samantha') ||
++      name.includes('karen') ||
++      name.includes('zira') ||
++      name.includes('hazel') ||
++      name.includes('susan') ||
++      name.includes('victoria') ||
++      (v.gender && v.gender === 'female')
++    )
++  })
++  
++  if (femaleVoice) {
++    console.log(`✅ Using female voice: ${femaleVoice.name}`)
++    cachedFemaleVoice = femaleVoice
++    return femaleVoice
++  }
++  
++  // Last resort: Use any English voice (but log it)
++  const englishVoice = voices.find(v => v.lang.startsWith('en'))
++  if (englishVoice) {
++    console.warn(`⚠️ Using fallback voice: ${englishVoice.name} (not ideal)`)
++    cachedFemaleVoice = englishVoice
++    return englishVoice
++  }
++  
++  return null
++}
++
++function getBestFemaleVoice() {
++  // Try to get cached voice first
++  if (cachedFemaleVoice) {
++    return cachedFemaleVoice
++  }
++  
++  // Load voices
++  return loadVoices()
++}
++
++function speakQuestion(text, isFinal = false) {
++  if (!text) return
++
++  window.speechSynthesis.cancel()
++
++  // ✅ Ensure voices are loaded before using them
++  const voice = getBestFemaleVoice()
++  if (!voice) {
++    // If voices not loaded, try loading them now
++    if (window.speechSynthesis.onvoiceschanged) {
++      window.speechSynthesis.onvoiceschanged()
++    }
++    // Force reload voices
++    const voices = window.speechSynthesis.getVoices()
++    if (voices.length > 0) {
++      loadVoices()
++    }
++  }
++
++  // Chrome TTS warmup fix
++  const warmup = new SpeechSynthesisUtterance('')
++  warmup.volume = 0
++  window.speechSynthesis.speak(warmup)
++
++  setTimeout(() => {
++    const utterance = new SpeechSynthesisUtterance(text)
++    
++    // ✅ Get and set the best female voice (try again if not cached)
++    const selectedVoice = voice || getBestFemaleVoice()
++    if (selectedVoice) {
++      utterance.voice = selectedVoice
++      utterance.voiceURI = selectedVoice.voiceURI
++      console.log(`🎤 Speaking with voice: ${selectedVoice.name}`)
++    } else {
++      console.warn('⚠️ No female voice found, using default')
++    }
++    
++    // ✅ Optimized voice settings for natural, pleasant speech
++    utterance.rate = 0.95       // Slightly slower for clarity
++    utterance.pitch = 1.0        // Natural pitch (not too high)
++    utterance.volume = 0.9      // Slightly lower for comfort
++    utterance.lang = 'en-US'
++
++    utterance.onend = () => {
++      aiSpeaking.value = false
++      console.log('✅ TTS complete')
++      if (isFinal) {
++        endInterview()
++      }
++    }
++
++    utterance.onerror = (error) => {
++      aiSpeaking.value = false
++      console.error('⚠️ TTS error:', error)
++      if (isFinal) {
++        endInterview()
++      }
++    }
++
++    window.speechSynthesis.speak(utterance)
++  }, 50)
++}
++
++// 🔥 PERFECT: Speaking controls
++async function startSpeaking() {
++  if (!localStream.value) await initializeMedia()
++
++  if (recognition.value) {
++    currentTranscript.value = ''
++    interimTranscript.value = ''
++    try {
++      recognition.value.start()
++      console.log('🎤 STT started')
++    } catch (e) {
++      console.error('❌ STT start failed:', e)
++    }
++  }
++
++  getSocket()?.emit('startRecording', { sessionId: props.sessionId })
++  isRecording.value = true
++  console.log('🗣️ Speaking mode → ACTIVE')
++}
++
++function stopSpeaking() {
++  console.log('🛑 stopSpeaking called')
++  
++  if (recognition.value) {
++    try {
++      recognition.value.stop()
++      console.log('🛑 STT stopped')
++    } catch (e) {
++      console.warn('⚠️ Error stopping recognition:', e)
++    }
++  }
++
++  // ✅ Wait a moment for final transcript to be captured
++  setTimeout(() => {
++    isRecording.value = false
++    waitingForFinal.value = true
++
++    // ✅ Combine final and interim transcripts
++    const final = currentTranscript.value || ''
++    const interim = interimTranscript.value || ''
++    const fullAnswer = `${final} ${interim}`.trim()
++    
++    console.log('🚀 Sending answer:', fullAnswer.substring(0, 50) + '...')
++    console.log('   Final length:', fullAnswer.length)
++
++    if (fullAnswer && fullAnswer.length > 0) {
++      conversationHistory.value.push({
++        type: 'answer',
++        text: fullAnswer,
++        timestamp: new Date()
++      })
++
++      const sock = getSocket()
++      if (sock?.connected) {
++        sock.emit('finishSpeaking', { 
++          sessionId: props.sessionId, 
++          answer: fullAnswer 
++        })
++        console.log('✅ Answer sent to backend')
++      } else {
++        console.error('❌ Socket not connected, cannot send answer')
++      }
++    } else {
++      console.warn('⚠️ No answer text to send')
++    }
++
++    // Clear transcripts after sending
++    setTimeout(() => {
++      currentTranscript.value = ''
++      interimTranscript.value = ''
++      waitingForFinal.value = false
++    }, 500)
++  }, 500) // Wait 500ms for final transcript
++}
++
++// 🔥 100% PERFECT: 4-Phase Graceful Shutdown + Guaranteed Navigation
++async function endInterview() {
++  console.log('🚀 4-PHASE GRACEFUL SHUTDOWN STARTED')
++
++  if (isProcessing.value) {
++    console.log('⏳ Already processing → skipping')
++    return
++  }
++  isProcessing.value = true
++
++  try {
++    // PHASE 1: FLUSH ALL EXISTING CHUNKS (1s)
++    console.log('📤 PHASE 1: Flushing existing chunks...')
++    await flushAllChunks()
++
++    // PHASE 2: STOP RECORDERS → Generate FINAL chunks
++    console.log('⏹️ PHASE 2: Stopping recorders → final chunks...')
++    stopRecording()
++
++    // PHASE 3: Wait for final chunks + final flush (2s)
++    console.log('⏳ PHASE 3: Waiting for final chunks...')
++    await new Promise(r => setTimeout(r, 2000))
++    console.log('📤 PHASE 3: Final flush...')
++    await flushAllChunks()
++
++    // PHASE 4: FULL CLEANUP + EMIT + NAVIGATE
++    console.log('🧹 PHASE 4: Full cleanup + navigate')
++
++    // Cleanup speech
++    window.speechSynthesis.cancel()
++    if (recognition.value) {
++      recognition.value.stop()
++      recognition.value = null
++    }
++
++    // Cleanup media tracks
++    if (localStream.value) {
++      localStream.value.getTracks().forEach(track => {
++        console.log(`🛑 Killed ${track.kind} track`)
++        track.stop()
++      })
++      localStream.value = null
++    }
++
++    // Clear video element
++    if (candidateVideo.value) {
++      const videoEl = candidateVideo.value.$el?.querySelector('video') || candidateVideo.value
++      if (videoEl?.srcObject) {
++        videoEl.srcObject.getTracks().forEach(t => t.stop())
++        videoEl.srcObject = null
++        videoEl.pause()
++        videoEl.src = ''
++        console.log('🖥️ Video element cleared')
++      }
++    }
++
++    // Emit endInterview (best effort)
++    const sock = getSocket()
++    if (sock?.connected) {
++      console.log('📤 EMITTING endInterview...')
++      sock.emit('endInterview', {
++        sessionId: props.sessionId,
++        questionsanswered: questionCount.value  // ✅ Backend expects this exact field
++      })
++    }
++
++    // 100% GUARANTEED NAVIGATION - NO SOCKET DEPENDENCY
++    console.log('🚀 FORCE NAVIGATE → Thank You page')
++    const user = store.getters['auth/currentUser']
++    const name = user?.name || 'Candidate'
++    router.push({ name: 'InterviewSummary', query: { name } })
++
++  } catch (e) {
++    console.error('❌ Shutdown error:', e)
++  } finally {
++    console.log('✅ 100% GRACEFUL SHUTDOWN COMPLETE')
++  }
++}
++
++// 🔥 PERFECT: Socket listeners - handles both questionsanswered & questions_asked
++async function setupSocketListeners() {
++  try {
++    const socket = await connectSocket(props.sessionId)
++    if (!socket) {
++      console.error('❌ Socket connection failed')
++      return
++    }
++
++    console.log('✅ Socket connected - listeners active')
++
++    socket.on('aiSpeaking', data => {
++      console.log('🤖 AI Speaking:', data.question?.substring(0, 50) + '...')
++      const isFinal = data.isfinal || data.is_final || false
++      const isSpeaking = data.isSpeaking || data.is_speaking || false
++      const qNum = data.questionnumber || data.questionNumber || data.question_number
++
++      if (!isFinal) {
++        currentQuestion.value = data.question
++        questionCount.value = qNum
++        conversationHistory.value.push({
++          type: 'question',
++          text: data.question,
++          questionNumber: qNum,
++          timestamp: new Date()
++        })
++      }
++
++      aiSpeaking.value = isSpeaking
++      if (isSpeaking) {
++        speakQuestion(data.question, isFinal)
++      }
++    })
++
++    socket.on('question', data => {
++      console.log('📩 Question event:', data.question?.substring(0, 50) + '...')
++      currentQuestion.value = data.question
++      questionCount.value = data.questionNumber || data.question_number
++    })
++
++    socket.on('answer_received', data => {
++      console.log('✅ Answer processed by backend')
++      isProcessing.value = false
++    })
++
++    socket.on('transcriptionUpdate', data => {
++      interimTranscript.value = data.interimTranscript || ''
++      currentTranscript.value = data.finalTranscript || ''
++    })
++
++    socket.on('interviewComplete', data => {
++      console.log('🏁 Backend: Interview complete')
++      evaluation.value = data
++      // Handle both field names from backend
++      questionCount.value = data.questionsanswered || data.questions_asked || questionCount.value
++
++      const name = store.getters['auth/currentUser']?.name || 'Candidate'
++      router.push({ name: 'InterviewSummary', query: { name } })
++    })
++
++    socket.on('bufferingWarning', count => {
++      totalPendingChunks.value = count
++      showBufferingWarning.value = count > 5
++    })
++
++    socket.on('disconnect', reason => {
++      console.log('🔌 Socket disconnect:', reason)
++      // Try to reconnect if not intentional
++      if (reason !== 'io client disconnect') {
++        console.log('🔄 Attempting to reconnect...')
++        setTimeout(async () => {
++          try {
++            const newSocket = await connectSocket(props.sessionId)
++            if (newSocket) {
++              console.log('✅ Reconnected successfully')
++              // Re-setup listeners
++              setupSocketListeners()
++            }
++          } catch (err) {
++            console.error('❌ Reconnection failed:', err)
++          }
++        }, 2000)
++      }
++    })
++
++    socket.on('error', error => {
++      console.error('❌ Socket error:', error)
++    })
++
++  } catch (error) {
++    console.error('❌ Socket setup failed:', error)
++    alert('Failed to connect. Please refresh.')
++  }
++}
++
++// 🔥 PERFECT: Lifecycle hooks
++onMounted(async () => {
++  console.log('🚀 InterviewScreen → INITIALIZING')
++  isMounted.value = true
++
++  // ✅ Load voices for TTS (needed for voice selection)
++  // Chrome loads voices asynchronously, so we need to wait
++  const loadVoicesNow = () => {
++    const voices = window.speechSynthesis.getVoices()
++    if (voices.length > 0) {
++      const selected = loadVoices()
++      if (selected) {
++        console.log(`✅ Loaded ${voices.length} TTS voices, selected: ${selected.name}`)
++      } else {
++        console.log(`✅ Loaded ${voices.length} TTS voices (no female voice found)`)
++      }
++    }
++  }
++  
++  if (window.speechSynthesis.onvoiceschanged !== undefined) {
++    window.speechSynthesis.onvoiceschanged = loadVoicesNow
++  }
++  
++  // Try loading immediately
++  loadVoicesNow()
++  
++  // Also try after a delay (for Chrome)
++  setTimeout(loadVoicesNow, 200)
++  setTimeout(loadVoicesNow, 1000)
++
++  // Start timer
++  startTimer()
++
++  // Initialize everything
++  initSpeechRecognition()
++  await setupSocketListeners()
++  await initializeMedia()
++  startContinuousVideoRecording()
++  startContinuousAudioRecording()
++
++  console.log('✅ InterviewScreen → 100% READY')
++})
++
++onBeforeUnmount(() => {
++  console.log('🧹 InterviewScreen → CLEANUP')
++  isDestroying.value = true
++
++  // Stop timer
++  if (timerInterval) {
++    clearInterval(timerInterval)
++    timerInterval = null
++  }
++
++  // Cleanup STT
++  if (recognition.value) {
++    recognition.value.stop()
++    recognition.value = null
++  }
++
++  // Emergency cleanup
++  if (localStream.value) {
++    localStream.value.getTracks().forEach(track => track.stop())
++    localStream.value = null
++  }
++})
++</script>
++
++<style scoped>
++.interview-screen {
++  display: flex;
++  flex-direction: column;
++  height: 100vh;
++  background: #f9fafb;
++  color: #1e293b;
++}
++.top-bar {
++  display: flex;
++  justify-content: space-between;
++  align-items: center;
++  background: white;
++  padding: 1rem 1.5rem;
++  box-shadow: 0 1px 4px rgb(0 0 0 / 0.1);
++  font-weight: 600;
++  font-size: 1.25rem;
++}
++.btn-sidebar-toggle {
++  font-size: 1.5rem;
++  background: none;
++  border: none;
++  cursor: pointer;
++}
++.main-content {
++  display: flex;
++  flex: 1;
++  overflow: hidden;
++}
++.video-container {
++  flex: 1.4;
++  background: black;
++  display: flex;
++  justify-content: center;
++  align-items: center;
++}
++.content-area {
++  flex: 1;
++  display: flex;
++  flex-direction: column;
++  background: #ffffff;
++  border-left: 1px solid #e5e7eb;
++}
++
++.input-section {
++  flex-shrink: 0;
++  background: #ffffff;
++  border-top: 2px solid #e5e7eb;
++  padding: 1rem 1.5rem;
++  display: flex;
++  flex-direction: column;
++  gap: 0.75rem;
++}
++.buffering-warning {
++  position: fixed;
++  bottom: 1rem;
++  left: 50%;
++  transform: translateX(-50%);
++  background: #fde68a;
++  padding: 0.75rem 1.5rem;
++  border-radius: 12px;
++  box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
++  font-weight: 600;
++}
++.sidebar-open .content-area {
++  max-width: 600px;
++}
++@media (max-width: 1024px) {
++  .main-content {
++    flex-direction: column;
++  }
++
++  .video-container {
++    flex: 0 0 300px;
++  }
++}
++</style>
++
+diff --git a/app/frontend/src/components/JoinScreen.vue b/app/frontend/src/components/JoinScreen.vue
+new file mode 100644
+index 0000000..1ad9b0c
+--- /dev/null
++++ b/app/frontend/src/components/JoinScreen.vue
+@@ -0,0 +1,129 @@
++<template>
++  <div class="join-screen">
++    <div class="card">
++      <h2>AI Video Interview</h2>
++      <p class="position-title">{{ interviewData.position }}</p>
++      <div class="details">
++        <p><strong>Company:</strong> {{ interviewData.company }}</p>
++        <p><strong>Position:</strong> {{ interviewData.position }}</p>
++      </div>
++      <h3>Before you start</h3>
++      <ul>
++        <li>Ensure your camera and microphone are working</li>
++        <li>Find a quiet, well-lit location</li>
++        <li>The AI will ask adaptive questions based on your answers</li>
++        <li>Speak clearly - your speech will be converted to text automatically</li>
++        <li>Your interview will be recorded for review</li>
++      </ul>
++      <button class="btn-join" @click="joinInterview">Join Interview Room</button>
++    </div>
++  </div>
++</template>
++
++<script setup>
++import { defineEmits, defineProps } from 'vue'
++import api from '@/services/api'
++
++const props = defineProps({
++  interviewData: {
++    type: Object,
++    required: true,
++  },
++})
++
++const emit = defineEmits(['joined'])
++
++async function joinInterview() {
++  try {
++    const interviewId = props.interviewData.id
++    if (!interviewId) {
++      alert('Interview ID is missing!')
++      return
++    }
++
++    console.log('🔍 Starting interview for ID:', interviewId)
++
++    const payload = {
++      job_title: props.interviewData.position,
++      job_description: props.interviewData.position,
++      candidate_background: {}, // backend already builds rich background
++    }
++
++    // Call the existing video-interview route:
++    // @interview_routes_bp.route('/start/<int:interview_id>', methods=['POST'])
++    const response = await api.post(`/video-interview/start/${interviewId}`, payload)
++
++    console.log('✅ Interview started:', response.data)
++
++    const session =
++      response.data.session_id ||
++      response.data.sessionId ||
++      response.data.sessionid
++
++    if (!session) {
++      alert('No session ID returned from server')
++      return
++    }
++
++    emit('joined', session)
++  } catch (err) {
++    console.error('❌ Failed to start interview:', err)
++    alert('Failed to start interview: ' + (err.response?.data?.error || err.message))
++  }
++}
++</script>
++
++<style scoped>
++.join-screen {
++  display: flex;
++  justify-content: center;
++  align-items: center;
++  height: 100vh;
++  background: #f0f4f8;
++  padding: 1rem;
++}
++.card {
++  background: white;
++  border-radius: 12px;
++  padding: 2rem;
++  max-width: 480px;
++  width: 100%;
++  box-shadow: 0 8px 24px rgb(0 0 0 / 0.1);
++  text-align: center;
++}
++.position-title {
++  font-weight: 600;
++  color: #4f46e5;
++  margin-bottom: 1.5rem;
++  font-size: 1.25rem;
++}
++.details p {
++  margin: 0.3rem 0;
++  font-size: 1rem;
++  color: #555;
++}
++ul {
++  text-align: left;
++  margin: 1.5rem 0;
++  padding-left: 1.2rem;
++  color: #666;
++  font-size: 0.95rem;
++  line-height: 1.5;
++}
++.btn-join {
++  background-color: #4f46e5;
++  color: white;
++  border: none;
++  padding: 0.75rem 2rem;
++  font-size: 1.1rem;
++  font-weight: 600;
++  border-radius: 8px;
++  cursor: pointer;
++  transition: background-color 0.3s ease;
++  width: 100%;
++}
++.btn-join:hover {
++  background-color: #4338ca;
++}
++</style>
++
+diff --git a/app/frontend/src/components/ToastNotification.vue b/app/frontend/src/components/ToastNotification.vue
+new file mode 100644
+index 0000000..dce5b8a
+--- /dev/null
++++ b/app/frontend/src/components/ToastNotification.vue
+@@ -0,0 +1,119 @@
++<template>
++  <transition-group name="toast" tag="div" class="toast-container" aria-live="polite" role="alert">
++    <div v-for="toast in toasts" :key="toast.id" :class="['toast', `toast-${toast.type}`]" role="alert" aria-atomic="true">
++      <span :class="['toast-icon', toast.icon]"></span>
++      <span class="toast-message">{{ toast.message }}</span>
++      <button class="toast-close-btn" @click="$emit('removeToast', toast.id)" aria-label="Close notification">&times;</button>
++    </div>
++  </transition-group>
++</template>
++
++<script setup>
++const props = defineProps({
++  toasts: {
++    type: Array,
++    default: () => []
++  }
++})
++
++const emit = defineEmits(['removeToast'])
++</script>
++
++<style scoped>
++.toast-container {
++  position: fixed;
++  top: 1rem;
++  right: 1rem;
++  display: flex;
++  flex-direction: column;
++  gap: 0.75rem;
++  z-index: 10000;
++  max-width: 300px;
++}
++
++.toast {
++  display: flex;
++  align-items: center;
++  background: white;
++  border-radius: 8px;
++  padding: 0.75rem 1rem;
++  box-shadow: 0 4px 12px rgb(0 0 0 / 0.1);
++  font-size: 0.875rem;
++  color: #1f2937;
++  position: relative;
++}
++
++.toast-info {
++  border-left: 4px solid #3b82f6;
++}
++
++.toast-success {
++  border-left: 4px solid #22c55e;
++}
++
++.toast-warning {
++  border-left: 4px solid #fbbf24;
++}
++
++.toast-error {
++  border-left: 4px solid #ef4444;
++}
++
++.toast-icon {
++  margin-right: 0.75rem;
++  font-size: 1.25rem;
++  user-select: none;
++}
++
++.toast-icon.success::before {
++  content: '✔';
++  color: #22c55e;
++}
++
++.toast-icon.error::before {
++  content: '✖';
++  color: #ef4444;
++}
++
++.toast-icon.warning::before {
++  content: '⚠';
++  color: #fbbf24;
++}
++
++.toast-icon.info::before {
++  content: 'ℹ';
++  color: #3b82f6;
++}
++
++.toast-message {
++  flex: 1;
++}
++
++.toast-close-btn {
++  background: none;
++  border: none;
++  font-size: 1.25rem;
++  color: #6b7280;
++  cursor: pointer;
++  padding: 0;
++  line-height: 1;
++  margin-left: 0.5rem;
++  user-select: none;
++}
++
++.toast-close-btn:hover {
++  color: #374151;
++}
++
++/* Animations */
++.toast-enter-from,
++.toast-leave-to {
++  opacity: 0;
++  transform: translateX(100%);
++}
++.toast-enter-active,
++.toast-leave-active {
++  transition: all 0.3s ease;
++}
++</style>
++
+diff --git a/app/frontend/src/components/Transcript.vue b/app/frontend/src/components/Transcript.vue
+new file mode 100644
+index 0000000..3bbd776
+--- /dev/null
++++ b/app/frontend/src/components/Transcript.vue
+@@ -0,0 +1,142 @@
++<template>
++  <section class="transcript-section" role="log" aria-live="polite" aria-atomic="true">
++    <h4>Your Response Live Transcript</h4>
++
++    <div class="transcript-box" :class="{ active: isRecording }" aria-label="Live transcript of your answers">
++      <p v-if="!finalTranscript && !interimTranscript && !isRecording" class="placeholder">
++        Click Start Speaking to answer...
++      </p>
++      <p v-else-if="isRecording" class="listening-text">
++        Recording... <span class="final-transcript">{{ finalTranscript }}</span><span class="interim-transcript">{{ interimTranscript }}</span>
++      </p>
++      <p v-else>{{ finalTranscript }}</p>
++    </div>
++
++    <div v-if="!isRecording" class="manual-input">
++      <p class="hint">Or type your answer manually</p>
++      <textarea
++        v-model="manualAnswer"
++        placeholder="Type your answer here..."
++        :disabled="isRecording || aiSpeaking"
++        aria-label="Type your answer manually"
++        class="manual-textarea"
++      ></textarea>
++      <button
++        class="btn-submit-manual"
++        :disabled="!manualAnswer.trim() || aiSpeaking"
++        @click="submitManualAnswer"
++        aria-label="Submit typed answer"
++      >
++        Submit Answer
++      </button>
++    </div>
++  </section>
++</template>
++
++<script setup>
++import { ref } from 'vue'
++
++const props = defineProps({
++  finalTranscript: { type: String, default: '' },
++  interimTranscript: { type: String, default: '' },
++  isRecording: { type: Boolean, default: false },
++  aiSpeaking: { type: Boolean, default: false }
++})
++
++const manualAnswer = ref('')
++
++const emit = defineEmits(['submitManualAnswer'])
++
++function submitManualAnswer() {
++  if (manualAnswer.value.trim()) {
++    emit('submitManualAnswer', manualAnswer.value.trim())
++    manualAnswer.value = ''
++  }
++}
++</script>
++
++<style scoped>
++.transcript-section {
++  background: white;
++  border-radius: 12px;
++  padding: 1rem 1.25rem;
++  box-shadow: 0 1px 4px rgb(0 0 0 / 0.1);
++  max-height: 180px;
++  overflow-y: auto;
++}
++
++.transcript-box {
++  min-height: 72px;
++  font-size: 1rem;
++  color: #333;
++  padding: 0.5rem 0;
++}
++
++.transcript-box.active {
++  background: #f3f4f6;
++}
++
++.placeholder {
++  color: #9ca3af;
++  font-style: italic;
++}
++
++.listening-text {
++  font-weight: 600;
++}
++
++.final-transcript {
++  color: #1f2937;
++}
++
++.interim-transcript {
++  color: #6b7280;
++  font-style: italic;
++  margin-left: 0.4rem;
++}
++
++.manual-input {
++  margin-top: 1rem;
++  display: flex;
++  flex-direction: column;
++  gap: 0.5rem;
++}
++
++.hint {
++  font-size: 0.875rem;
++  color: #6b7280;
++}
++
++.manual-textarea {
++  width: 100%;
++  min-height: 70px;
++  border-radius: 8px;
++  border: 1px solid #d1d5db;
++  padding: 0.5rem;
++  resize: vertical;
++  font-family: inherit;
++  font-size: 1rem;
++}
++
++.btn-submit-manual {
++  align-self: flex-end;
++  background: #4f46e5;
++  color: white;
++  border: none;
++  padding: 0.5rem 1.5rem;
++  font-weight: 600;
++  border-radius: 8px;
++  cursor: pointer;
++  transition: background-color 0.3s ease;
++}
++
++.btn-submit-manual:disabled {
++  background: #a5b4fc;
++  cursor: not-allowed;
++}
++
++.btn-submit-manual:hover:not(:disabled) {
++  background: #4338ca;
++}
++</style>
++
+diff --git a/app/frontend/src/components/VideoFeed.vue b/app/frontend/src/components/VideoFeed.vue
+new file mode 100644
+index 0000000..27ccf18
+--- /dev/null
++++ b/app/frontend/src/components/VideoFeed.vue
+@@ -0,0 +1,112 @@
++<template>
++  <div class="video-feed">
++    <video
++      v-if="enabled"
++      ref="videoElement"
++      autoplay
++      muted
++      playsinline
++      class="video-element mirror"
++      aria-label="Your video feed"
++    ></video>
++    <div v-else class="video-placeholder" aria-label="Video disabled">
++      <div class="avatar-large">YOU</div>
++    </div>
++  </div>
++</template>
++
++<script setup>
++import { watch, onMounted, ref } from 'vue'
++
++const props = defineProps({
++  enabled: {
++    type: Boolean,
++    default: true
++  }
++})
++
++const videoElement = ref(null)
++let localStream = null
++
++async function startVideo() {
++  try {
++    localStream = await navigator.mediaDevices.getUserMedia({
++      video: { width: 1280, height: 720, facingMode: 'user' },
++      audio: false
++    })
++    if (videoElement.value) {
++      videoElement.value.srcObject = localStream
++    }
++  } catch (error) {
++    console.error('Error accessing webcam:', error)
++  }
++}
++
++function stopVideo() {
++  if (localStream) {
++    localStream.getTracks().forEach(track => track.stop())
++    localStream = null
++  }
++}
++
++watch(
++  () => props.enabled,
++  (newVal) => {
++    if (newVal) startVideo()
++    else stopVideo()
++  }
++)
++
++onMounted(() => {
++  if (props.enabled) startVideo()
++})
++</script>
++
++<style scoped>
++.video-feed {
++  width: 100%;
++  height: 100%;
++  background: #000;
++  display: flex;
++  justify-content: center;
++  align-items: center;
++  border-radius: 12px;
++  overflow: hidden;
++  position: relative;
++}
++
++.video-element {
++  width: 100%;
++  height: 100%;
++  object-fit: cover;
++}
++
++.mirror {
++  transform: scaleX(-1);
++}
++
++.video-placeholder {
++  width: 100%;
++  height: 100%;
++  background: #ddd;
++  color: #666;
++  font-weight: 700;
++  font-size: 3rem;
++  display: flex;
++  justify-content: center;
++  align-items: center;
++}
++
++.avatar-large {
++  border-radius: 50%;
++  width: 120px;
++  height: 120px;
++  background: #bbb;
++  display: flex;
++  justify-content: center;
++  align-items: center;
++  color: white;
++  user-select: none;
++}
++</style>
++
+diff --git a/app/frontend/src/components/controls.vue b/app/frontend/src/components/controls.vue
+new file mode 100644
+index 0000000..1651202
+--- /dev/null
++++ b/app/frontend/src/components/controls.vue
+@@ -0,0 +1,150 @@
++<template>
++  <div class="control-bar" role="group" aria-label="Interview controls">
++    <div class="control-group left">
++      <button
++        class="control-btn"
++        :class="{ active: micEnabled }"
++        @click="$emit('toggleMic')"
++        :aria-label="micEnabled ? 'Mute microphone' : 'Unmute microphone'"
++        title="Toggle Microphone"
++      >
++        <svg v-if="micEnabled" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
++          <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
++          <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
++        </svg>
++        <svg v-else xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
++          <line x1="11" y1="11" x2="22" y2="22"/>
++          <path d="M9 9v3a3 3 0 0 0 5.12 2.12"/>
++        </svg>
++      </button>
++
++      <button
++        class="control-btn"
++        :class="{ active: videoEnabled }"
++        @click="$emit('toggleVideo')"
++        :aria-label="videoEnabled ? 'Stop video' : 'Start video'"
++        title="Toggle Video"
++      >
++        <svg v-if="videoEnabled" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
++          <polygon points="23 7 16 12 23 17 23 7"/>
++          <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
++        </svg>
++        <svg v-else xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
++          <path d="M16 16v1a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V7"/>
++          <line x1="1" y1="1" x2="23" y2="23"/>
++        </svg>
++      </button>
++    </div>
++
++    <div class="control-group center">
++      <button
++        v-if="!isRecording"
++        class="control-btn btn-speak"
++        @click="$emit('startSpeaking')"
++        :disabled="aiSpeaking || isProcessing"
++        aria-label="Start speaking your answer"
++      >
++        Start Speaking
++      </button>
++      <button
++        v-else
++        class="control-btn btn-stop"
++        @click="$emit('stopSpeaking')"
++        :disabled="isProcessing || waitingForFinal"
++        aria-label="Finish your answer"
++      >
++        Finish Answer
++      </button>
++    </div>
++
++    <div class="control-group right">
++      <button
++        class="control-btn end-call-btn"
++        @click="$emit('endInterview')"
++        :disabled="isProcessing"
++        :class="{ 'btn-disabled': isProcessing }"
++        aria-label="End interview"
++      >
++        {{ isProcessing ? 'Finishing...' : 'End Interview' }}
++      </button>
++    </div>
++  </div>
++</template>
++
++<script setup>
++const props = defineProps({
++  micEnabled: Boolean,
++  videoEnabled: Boolean,
++  isRecording: Boolean,
++  isProcessing: Boolean,
++  aiSpeaking: Boolean,
++  waitingForFinal: Boolean
++})
++defineEmits(['toggleMic', 'toggleVideo', 'startSpeaking', 'stopSpeaking', 'endInterview'])
++</script>
++
++<style scoped>
++.control-bar {
++  display: flex;
++  justify-content: space-between;
++  background: white;
++  padding: 1rem 1.5rem;
++  box-shadow: 0 -1px 6px rgb(0 0 0 / 0.1);
++  border-top: 1px solid #e5e7eb;
++}
++.control-group {
++  display: flex;
++  gap: 1rem;
++  align-items: center;
++}
++.control-btn {
++  cursor: pointer;
++  border: none;
++  background: none;
++  font-weight: 600;
++  padding: 0.5rem 1.2rem;
++  border-radius: 8px;
++  color: #374151;
++  display: flex;
++  align-items: center;
++  justify-content: center;
++  transition: background-color 0.3s ease;
++}
++.control-btn svg {
++  width: 24px;
++  height: 24px;
++}
++.control-btn.active {
++  background-color: #4f46e5;
++  color: white;
++}
++.control-btn:hover:not(:disabled) {
++  background-color: #4338ca;
++  color: white;
++}
++.control-btn:disabled {
++  opacity: 0.5;
++  cursor: not-allowed;
++}
++.btn-speak {
++  background-color: #2563eb;
++  color: white;
++  padding: 0.65rem 1.6rem;
++}
++.btn-stop {
++  background-color: #dc2626;
++  color: white;
++  padding: 0.65rem 1.6rem;
++}
++.end-call-btn {
++  background-color: #b91c1c;
++  color: white;
++  padding: 0.65rem 1.6rem;
++}
++.btn-disabled {
++  opacity: 0.6;
++  cursor: not-allowed;
++  pointer-events: none; /* Extra safety to prevent clicks */
++}
++</style>
++
+diff --git a/app/frontend/src/components/visidebar.vue b/app/frontend/src/components/visidebar.vue
+new file mode 100644
+index 0000000..ad65b38
+--- /dev/null
++++ b/app/frontend/src/components/visidebar.vue
+@@ -0,0 +1,190 @@
++<template>
++  <aside class="sidebar" role="complementary" aria-label="Interview progress and details">
++    <header class="sidebar-header">
++      <h3>Interview Progress</h3>
++      <button class="close-sidebar-btn" @click="$emit('closeSidebar')" aria-label="Close sidebar">&times;</button>
++    </header>
++
++    <div class="sidebar-content">
++      <div class="progress-info">
++        <p><strong>Questions:</strong> {{ questionCount }}/10</p>
++        <p><strong>Duration:</strong> {{ timeElapsed }}</p>
++        <p><strong>Progress:</strong> <span>{{ progressPercent?.toFixed(1) || '0.0' }}%</span></p>
++        <p>
++          <strong>Status:</strong>
++          <span v-if="aiSpeaking">AI Speaking</span>
++          <span v-else-if="isRecording">Recording</span>
++          <span v-else>Idle</span>
++        </p>
++      </div>
++
++      <div class="progress-bar-container" role="progressbar" :aria-valuenow="progressPercent" aria-valuemin="0" aria-valuemax="100">
++        <div class="progress-bar-fill" :style="{ width: progressPercent + '%' }"></div>
++      </div>
++
++      <div v-if="evaluation" class="evaluation-report" tabindex="0">
++        <h4>Overall Rating</h4>
++        <div class="overall-stars">
++          <span v-for="star in 5" :key="star" class="star" :class="{ filled: star <= Math.round(evaluation.overallrating) }" aria-hidden="true">★</span>
++          <div class="rating-number" :aria-label="'Rating ' + evaluation.overallrating + ' out of 5'">{{ evaluation.overallrating.toFixed(1) }}</div>
++        </div>
++
++        <h4>Key Points</h4>
++        <div class="key-points-grid">
++          <div class="points-column strengths">
++            <h5>Strengths</h5>
++            <ul>
++              <li v-for="(strength, idx) in evaluation.strengths" :key="'strength' + idx">{{ strength }}</li>
++            </ul>
++          </div>
++          <div class="points-column concerns">
++            <h5>Areas of Concern</h5>
++            <ul v-if="evaluation.areasofconcern && evaluation.areasofconcern.length > 0">
++              <li v-for="(concern, idx) in evaluation.areasofconcern" :key="'concern' + idx">{{ concern }}</li>
++            </ul>
++            <p v-else>No major concerns identified</p>
++          </div>
++        </div>
++
++        <h4>Recommendation</h4>
++        <div :class="'recommendation-badge ' + (evaluation.recommendation.decision ? evaluation.recommendation.decision.toLowerCase().replace(' ', '-') : '')">
++          {{ evaluation.recommendation.decision || 'N/A' }}
++        </div>
++        <p>{{ evaluation.recommendation.reasoning }}</p>
++      </div>
++    </div>
++  </aside>
++</template>
++
++<script setup>
++
++import { ref, computed } from 'vue'
++const props = defineProps({
++  questionCount: Number,
++  timeElapsed: String,
++  aiSpeaking: Boolean,
++  isRecording: Boolean,
++  progressPercent: Number,
++  evaluation: Object
++})
++
++
++const safeQuestionCount = computed(() => questionCount || 0)
++const safeTimeElapsed = computed(() => timeElapsed || '00:00')
++const safeProgressPercent = computed(() => progressPercent || 0)
++const safeEvaluation = computed(() => evaluation || null)
++
++</script>
++
++<style scoped>
++.sidebar {
++  width: 320px;
++  background: #fff;
++  box-shadow: -4px 0 12px rgb(0 0 0 / 0.05);
++  display: flex;
++  flex-direction: column;
++  height: 100%;
++  padding: 1rem 1.5rem;
++  overflow-y: auto;
++  font-size: 0.95rem;
++  color: #334155;
++  border-left: 1px solid #e2e8f0;
++}
++.sidebar-header {
++  display: flex;
++  justify-content: space-between;
++  align-items: center;
++  margin-bottom: 1rem;
++}
++.close-sidebar-btn {
++  background: none;
++  border: none;
++  font-size: 1.5rem;
++  cursor: pointer;
++  color: #64748b;
++}
++.progress-info p {
++  margin: 0.25rem 0;
++}
++.progress-bar-container {
++  height: 12px;
++  background: #e0e7ff;
++  border-radius: 8px;
++  margin: 1rem 0 1.5rem;
++  overflow: hidden;
++}
++.progress-bar-fill {
++  height: 12px;
++  background: #6366f1;
++  transition: width 0.3s ease;
++}
++.evaluation-report {
++  margin-top: 1rem;
++  outline: none;
++}
++
++.overall-stars {
++  display: flex;
++  align-items: center;
++  gap: 0.5rem;
++  font-size: 1.5rem;
++  color: #facc15;
++}
++
++.star {
++  color: #ccc;
++}
++
++.star.filled {
++  color: #f59e0b;
++}
++
++.rating-number {
++  font-weight: 600;
++  color: #334155;
++  font-size: 1.2rem;
++}
++
++.key-points-grid {
++  display: flex;
++  gap: 1rem;
++  margin: 1rem 0;
++}
++
++.points-column {
++  flex: 1;
++}
++
++.points-column h5 {
++  margin-bottom: 0.5rem;
++  color: #4b5563;
++}
++
++.points-column ul {
++  list-style-type: disc;
++  padding-left: 1.2rem;
++}
++
++.recommendation-badge {
++  padding: 0.5rem 1rem;
++  font-weight: 700;
++  border-radius: 8px;
++  text-align: center;
++  margin-bottom: 0.5rem;
++  color: white;
++  width: fit-content;
++}
++.recommendation-badge.strong-hire {
++  background-color: #16a34a;
++}
++.recommendation-badge.hire {
++  background-color: #22c55e;
++}
++.recommendation-badge.no-hire {
++  background-color: #dc2626;
++}
++.recommendation-badge.maybe {
++  background-color: #eab308;
++}
++</style>
++
