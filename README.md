@@ -1,4 +1,4 @@
-# SE-Project
+# SE-Project (developed in a group setting)
 
 ## Run the full stack with Docker
 
