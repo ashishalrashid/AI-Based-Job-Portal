@@ -1,4 +1,12 @@
-# SE-Project (developed in a group setting)
+# HR Recruitment Platform
+
+## BEST PROJECT WINNER SEPT-2025
+
+I received the **Best Project Award** for its design, technical execution, and impact.
+
+<img src="22f1001551_CS3001_certificate_page-0001.jpg" alt="Best Project Certificate" width="600"/>
+
+
 
 ## Run the full stack with Docker
 
